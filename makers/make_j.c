@@ -1,6 +1,6 @@
 #include "makers.h"
 
-void make_j(uint16_t piece[4][21]) {
+void make_j(unsigned short piece[4][21]) {
     piece[0][0] = 0b0000000010000000;
     piece[0][1] = 0b0000001110000000;
 

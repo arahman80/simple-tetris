@@ -1,11 +1,9 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include "board_utils.h"
 #include "../makers/makers.h"
 
 #define piece_t enum piece_t
 
-void init_piece_board(uint16_t piece[4][21], piece_t piece_type) {
+void init_piece_board(unsigned short piece[4][21], piece_t piece_type) {
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 21; j++) {
             piece[i][j] = 0b0000000000000000;
@@ -35,7 +33,7 @@ void init_piece_board(uint16_t piece[4][21], piece_t piece_type) {
         make_j(piece);
         break;
     default:
-        printf("Malformed piece type.");
-        exit(1);
+        /* Malformed piece: do absolutely nothing */
+        break;
     }
 }

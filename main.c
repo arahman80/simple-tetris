@@ -1,44 +1,42 @@
-#include <complex.h>
-#include <stdint.h>
 #include <ncurses.h>
 #include <unistd.h>
-#include <stdbool.h>
 #include <time.h>
 #include "board_utils/board_utils.h"
 
-void print_bitboard(uint16_t board_in[21], uint16_t piece_in[21]) {
+void print_bitboard(unsigned short board_in[21], unsigned short piece_in[21]) {
     for (int j = 0; j < 21; j++) {
-        uint16_t board = board_in[j];
-        uint16_t piece = piece_in[j];
+        unsigned short board = board_in[j];
+        unsigned short piece = piece_in[j];
         for (int i = 15; i >= 0; i--) {
             uint8_t bit1 = (board >> i) & 1;
             uint8_t bit2 = (piece >> i) & 1;
             uint8_t bit = bit1 | bit2;
 
-            mvaddch(j, 15 - i, bit ? ACS_CKBOARD : ' ');
+            mvaddch(j, 15 - i, bit ? '#' : ' ');
         }
     }
 
     refresh();
 }
 
-bool test_interference(uint16_t board_in[21], uint16_t piece_in[4][21], int selected_rot) {
+int test_interference(unsigned short board_in[21], unsigned short piece_in[4][21], int selected_rot) {
     for (int i = 0; i < 21; i++) {
         if (board_in[i] & piece_in[selected_rot][i]) {
-            return true;
+            return 1;
         }
     }
 
-    return false;
+    return 0;
 }
 
 int main(void) {
-    uint16_t board[21] = {0};
-    uint16_t piece[4][21] = {0};
+    unsigned short board[21] = {0};
+    unsigned short piece[4][21] = {0};
     int selected_rot = 0;
     init_game_board(board);
     init_piece_board(piece, PIECE_I);
-    clock_t last_fall = time(NULL);
+    struct timespec last_fall;
+    clock_gettime(CLOCK_MONOTONIC, &last_fall);
     
     initscr();
     noecho();
@@ -49,8 +47,10 @@ int main(void) {
 
     int ch;
     while ((ch = getch()) != 'q') {
-        time_t now = time(NULL);
-        double elapsed = difftime(now, last_fall);
+        struct timespec now;
+        clock_gettime(CLOCK_MONOTONIC, &now);
+        double elapsed = (now.tv_sec - last_fall.tv_sec) + 
+                        (now.tv_nsec - last_fall.tv_nsec) / 1e9;
 
         switch (ch) {
         case KEY_UP:
@@ -64,19 +64,25 @@ int main(void) {
             }
             break;
         case KEY_LEFT:
-            shift(board, piece, selected_rot, true);
+            shift(board, piece, selected_rot, 1);
             break;
         case KEY_RIGHT:
-            shift(board, piece, selected_rot, false);
+            shift(board, piece, selected_rot, 0);
+            break;
+        case 'f':
+            fall(board, piece, selected_rot);
+            continue;
             break;
         case ' ':
-            fall(board, piece, selected_rot);
+            while (fall(board, piece, selected_rot));
+            add_piece_to_board(board, piece, selected_rot);
+            init_piece_board(piece, PIECE_I);
             continue;
             break;
         }
 
-        if (elapsed >= 0.25) {
-            last_fall = time(NULL);
+        if (elapsed >= 0.1) {
+            last_fall = now;
             if (!fall(board, piece, selected_rot)) {
                 add_piece_to_board(board, piece, selected_rot);
                 init_piece_board(piece, PIECE_I);

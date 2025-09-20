@@ -1,10 +1,9 @@
-#include <memory.h>
 #include "board_utils.h"
 
-bool fall(uint16_t board[21], uint16_t piece[4][21], int selected_rot) {
+int fall(unsigned short board[21], unsigned short piece[4][21], int selected_rot) {
     for (int i = 0; i < 20; i++) {
         if (board[i + 1] & piece[selected_rot][i]) {
-            return false;
+            return 0;
         }
     }
 
@@ -16,5 +15,5 @@ bool fall(uint16_t board[21], uint16_t piece[4][21], int selected_rot) {
         piece[i][0] = 0b0000000000000000;
     }
     
-    return true;
+    return 1;
 }
