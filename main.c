@@ -3,6 +3,7 @@
 #include <time.h>
 #include "board_utils/board_utils.h"
 
+/* Externally dependent */
 void print_bitboard(unsigned short board_in[21], unsigned short piece_in[21]) {
     for (int j = 0; j < 21; j++) {
         unsigned short board = board_in[j];
@@ -29,6 +30,7 @@ int test_interference(unsigned short board_in[21], unsigned short piece_in[4][21
     return 0;
 }
 
+/* Externally dependent */
 int main(void) {
     unsigned short board[21] = {0};
     unsigned short piece[4][21] = {0};
