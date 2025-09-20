@@ -2,8 +2,8 @@
 #include "board_utils.h"
 
 bool fall(uint16_t board[21], uint16_t piece[4][21], int selected_rot) {
-    for (int i = 0; i < 19; i++) {
-        if (board[i] & piece[selected_rot][i + 1]) {
+    for (int i = 0; i < 20; i++) {
+        if (board[i + 1] & piece[selected_rot][i]) {
             return false;
         }
     }

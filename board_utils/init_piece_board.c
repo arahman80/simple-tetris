@@ -6,6 +6,12 @@
 #define piece_t enum piece_t
 
 void init_piece_board(uint16_t piece[4][21], piece_t piece_type) {
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 21; j++) {
+            piece[i][j] = 0b0000000000000000;
+        }
+    }
+    
     switch (piece_type) {
     case PIECE_O:
         make_o(piece);
