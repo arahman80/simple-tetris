@@ -1,6 +1,6 @@
 #include "board_utils.h"
 
-void
+U0
 add_piece_to_board (U16 board[BOARD_HEIGHT], U16 piece[NUM_ROT][BOARD_HEIGHT],
                     I16 selected_rot)
 {

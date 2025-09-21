@@ -5,7 +5,7 @@
 #include <unistd.h>
 
 /* Externally dependent */
-void
+U0
 print_bitboard (U16 board_in[BOARD_HEIGHT], U16 piece_in[BOARD_HEIGHT],
                 U32 score, U16 lines, U16 level)
 {
@@ -42,7 +42,7 @@ print_bitboard (U16 board_in[BOARD_HEIGHT], U16 piece_in[BOARD_HEIGHT],
 
 /* Externally dependent */
 I16
-main (void)
+main (U0)
 {
   srand (time (NULL));
   U16 board[BOARD_HEIGHT] = { 0 };

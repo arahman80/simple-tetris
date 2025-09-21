@@ -1,6 +1,6 @@
 #include "makers.h"
 
-void
+U0
 make_z (U16 piece[NUM_ROT][BOARD_HEIGHT])
 {
   piece[0][0] = 0b0000001100000000;
