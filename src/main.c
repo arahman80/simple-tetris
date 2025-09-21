@@ -1,4 +1,4 @@
-#include "board_utils/board_utils.h"
+#include "board_utils.h"
 #include <ncurses.h>
 #include <stdlib.h>
 #include <time.h>

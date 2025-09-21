@@ -1,4 +1,4 @@
-#include "../makers/makers.h"
+#include "makers.h"
 #include "board_utils.h"
 
 #define piece_t enum piece_t

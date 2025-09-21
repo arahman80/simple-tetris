@@ -1,7 +1,7 @@
 #ifndef MAKERS_H
 #define MAKERS_H
 
-#include "../stdmac.h"
+#include "stdmac.h"
 
 void make_o (u16 piece[NUM_ROT][BOARD_HEIGHT]);
 void make_t (u16 piece[NUM_ROT][BOARD_HEIGHT]);

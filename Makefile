@@ -1,19 +1,19 @@
 # Compiler and flags
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -Os
+CFLAGS = -Wall -Wextra -Werror -Os -Iinclude
 LIBS = -lncurses
 
 # Directories
-SRC_DIRS = board_utils makers
+SRC_DIR = src
 BUILD_DIR = build
 
 # Source files
-SRCS = main.c \
-       $(wildcard board_utils/*.c) \
-       $(wildcard makers/*.c)
+SRCS = $(wildcard $(SRC_DIR)/*.c) \
+       $(wildcard $(SRC_DIR)/board_utils/*.c) \
+       $(wildcard $(SRC_DIR)/makers/*.c)
 
-# Object files (all go into build/)
-OBJS = $(patsubst %.c,$(BUILD_DIR)/%.o,$(SRCS))
+# Object files (mirrors src/ hierarchy inside build/)
+OBJS = $(patsubst $(SRC_DIR)/%.c,$(BUILD_DIR)/%.o,$(SRCS))
 
 # Target executable
 TARGET = $(BUILD_DIR)/tetris
@@ -29,20 +29,19 @@ $(TARGET): $(OBJS)
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 
 # Compile source files into object files
-# Ensure subdirectories exist in build
-$(BUILD_DIR)/%.o: %.c | $(BUILD_DIR)
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c | $(BUILD_DIR)
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Create build directory if it doesn't exist
+# Ensure build directory exists
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
 
-# Format all C and header files in place
+# Format all C and header files
 format:
-	clang-format -i -style=$(STYLE) $(SRCS) $(wildcard board_utils/*.h) $(wildcard makers/*.h)
+	clang-format -i -style=$(STYLE) $(SRCS) $(wildcard include/*.h)
 
-# Clean up
+# Clean build artifacts
 clean:
 	rm -rf $(BUILD_DIR)
 

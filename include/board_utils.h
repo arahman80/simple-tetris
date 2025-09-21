@@ -1,7 +1,7 @@
 #ifndef BOARD_UTILS_H
 #define BOARD_UTILS_H
 
-#include "../stdmac.h"
+#include "stdmac.h"
 
 enum piece_t
 {
