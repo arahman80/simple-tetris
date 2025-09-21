@@ -7,6 +7,8 @@
 #include <time.h>
 #include <unistd.h>
 
+#define FALL_PERIOD 0.25
+
 /* Externally dependent */
 void
 print_bitboard (u16 board_in[BOARD_HEIGHT], u16 piece_in[BOARD_HEIGHT])
@@ -112,16 +114,13 @@ main (void)
           continue;
           break;
         case ' ':
-          while (fall (board, piece, selected_rot))
-            ;
-          add_piece_to_board (board, piece, selected_rot);
-          clear_rows (board);
-          init_piece_board (piece, rand () % 7);
-          continue;
+          while (fall (board, piece, selected_rot));
+          // skip the remainder of this fall-frame
+          elapsed = FALL_PERIOD;
           break;
         }
 
-      if (elapsed >= 0.25)
+      if (elapsed >= FALL_PERIOD)
         {
           last_fall = now;
           if (!fall (board, piece, selected_rot))
