@@ -6,14 +6,15 @@ LIBS = -lncurses
 # Directories
 SRC_DIR = src
 BUILD_DIR = build
+OBJ_DIR = $(BUILD_DIR)/obj
 
 # Source files
 SRCS = $(wildcard $(SRC_DIR)/*.c) \
        $(wildcard $(SRC_DIR)/board_utils/*.c) \
        $(wildcard $(SRC_DIR)/makers/*.c)
 
-# Object files (mirrors src/ hierarchy inside build/)
-OBJS = $(patsubst $(SRC_DIR)/%.c,$(BUILD_DIR)/%.o,$(SRCS))
+# Object files (mirrors src/ hierarchy inside build/obj/)
+OBJS = $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRCS))
 
 # Target executable
 TARGET = $(BUILD_DIR)/tetris
@@ -25,17 +26,20 @@ STYLE = GNU
 all: $(TARGET)
 
 # Link the executable
-$(TARGET): $(OBJS)
+$(TARGET): $(OBJS) | $(BUILD_DIR)
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 
 # Compile source files into object files
-$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c | $(BUILD_DIR)
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Ensure build directory exists
+# Ensure build and object directories exist
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
+
+$(OBJ_DIR):
+	mkdir -p $(OBJ_DIR)
 
 # Format all C and header files
 format:
