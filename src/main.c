@@ -68,6 +68,10 @@ main (void)
   struct timespec last_fall;
   clock_gettime (CLOCK_MONOTONIC, &last_fall);
 
+  struct timespec frame_delay;
+  frame_delay.tv_sec = BASE_US_BETWEEN_FRAMES / 1000000;
+  frame_delay.tv_nsec = (BASE_US_BETWEEN_FRAMES % 1000000) * 1000;
+
   initscr ();
   noecho ();
   cbreak ();
@@ -138,10 +142,7 @@ main (void)
       erase ();
       print_bitboard (board, piece[selected_rot]);
 
-      struct timespec delay;
-      delay.tv_sec = BASE_US_BETWEEN_FRAMES / 1000000;
-      delay.tv_nsec = (BASE_US_BETWEEN_FRAMES % 1000000) * 1000;
-      nanosleep(&delay, NULL);
+      nanosleep(&frame_delay, NULL);
     }
 
   endwin ();
