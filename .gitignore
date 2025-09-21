@@ -1,4 +1,4 @@
-# ignore build
+# Ignore build
 build/
 # Ignore JSON configs
 *.json
