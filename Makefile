@@ -45,8 +45,12 @@ $(OBJ_DIR):
 format:
 	clang-format -i -style=$(STYLE) $(SRCS) $(wildcard include/*.h)
 
+# Run clang-tidy on all sources
+lint:
+	clang-tidy $(SRCS) -header-filter=.* -- $(CFLAGS) -fdiagnostics-color=always
+
 # Clean build artifacts
 clean:
 	rm -rf $(BUILD_DIR)
 
-.PHONY: all clean format
+.PHONY: all clean format lint

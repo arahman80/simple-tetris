@@ -1,8 +1,8 @@
-#include "board_utils.h"
 #include <ncurses.h>
 #include <stdlib.h>
 #include <time.h>
 #include <unistd.h>
+#include "board_utils.h"
 
 /* Externally dependent */
 void
@@ -130,6 +130,7 @@ main (void)
                 }
             }
         }
+
       erase ();
       print_bitboard (board, piece[selected_rot]);
 
