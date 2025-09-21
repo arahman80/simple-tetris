@@ -3,12 +3,12 @@
 
 #include "stdmac.h"
 
-void make_o (u16 piece[NUM_ROT][BOARD_HEIGHT]);
-void make_t (u16 piece[NUM_ROT][BOARD_HEIGHT]);
-void make_i (u16 piece[NUM_ROT][BOARD_HEIGHT]);
-void make_s (u16 piece[NUM_ROT][BOARD_HEIGHT]);
-void make_z (u16 piece[NUM_ROT][BOARD_HEIGHT]);
-void make_l (u16 piece[NUM_ROT][BOARD_HEIGHT]);
-void make_j (u16 piece[NUM_ROT][BOARD_HEIGHT]);
+void make_o (U16 piece[NUM_ROT][BOARD_HEIGHT]);
+void make_t (U16 piece[NUM_ROT][BOARD_HEIGHT]);
+void make_i (U16 piece[NUM_ROT][BOARD_HEIGHT]);
+void make_s (U16 piece[NUM_ROT][BOARD_HEIGHT]);
+void make_z (U16 piece[NUM_ROT][BOARD_HEIGHT]);
+void make_l (U16 piece[NUM_ROT][BOARD_HEIGHT]);
+void make_j (U16 piece[NUM_ROT][BOARD_HEIGHT]);
 
 #endif

@@ -6,22 +6,22 @@
 
 /* Externally dependent */
 void
-print_bitboard (u16 board_in[BOARD_HEIGHT], u16 piece_in[BOARD_HEIGHT],
-                u32 score, u16 lines, u16 level)
+print_bitboard (U16 board_in[BOARD_HEIGHT], U16 piece_in[BOARD_HEIGHT],
+                U32 score, U16 lines, U16 level)
 {
   start_color ();
   init_pair (1, COLOR_BLACK, COLOR_WHITE);
   init_pair (2, COLOR_BLACK, COLOR_BLACK);
 
-  for (i16 j = 0; j < BOARD_HEIGHT - 1; j++)
+  for (I16 j = 0; j < BOARD_HEIGHT - 1; j++)
     {
-      u16 board = board_in[j];
-      u16 piece = piece_in[j];
-      for (i16 i = 15; i >= 0; i--)
+      U16 board = board_in[j];
+      U16 piece = piece_in[j];
+      for (I16 i = 15; i >= 0; i--)
         {
-          u8 bit1 = (board >> i) & 1;
-          u8 bit2 = (piece >> i) & 1;
-          u8 bit = bit1 | bit2;
+          U8 bit1 = (board >> i) & 1;
+          U8 bit2 = (piece >> i) & 1;
+          U8 bit = bit1 | bit2;
 
           if (bit)
             attron (COLOR_PAIR (1));
@@ -40,32 +40,32 @@ print_bitboard (u16 board_in[BOARD_HEIGHT], u16 piece_in[BOARD_HEIGHT],
   refresh ();
 }
 
-bool
-test_interference (u16 board_in[BOARD_HEIGHT],
-                   u16 piece_in[NUM_ROT][BOARD_HEIGHT], i16 selected_rot)
+BOOL
+test_interference (U16 board_in[BOARD_HEIGHT],
+                   U16 piece_in[NUM_ROT][BOARD_HEIGHT], I16 selected_rot)
 {
-  for (i16 i = 0; i < BOARD_HEIGHT; i++)
+  for (I16 i = 0; i < BOARD_HEIGHT; i++)
     {
       if (board_in[i] & piece_in[selected_rot][i])
         {
-          return true;
+          return TRUE;
         }
     }
 
-  return false;
+  return FALSE;
 }
 
 /* Externally dependent */
-i16
+I16
 main (void)
 {
   srand (time (NULL));
-  u16 board[BOARD_HEIGHT] = { 0 };
-  u16 piece[NUM_ROT][BOARD_HEIGHT] = { 0 };
-  i16 selected_rot = 0;
-  u16 level = 1;
-  u32 score = 0;
-  u16 lines = 0;
+  U16 board[BOARD_HEIGHT] = { 0 };
+  U16 piece[NUM_ROT][BOARD_HEIGHT] = { 0 };
+  I16 selected_rot = 0;
+  U16 level = 1;
+  U32 score = 0;
+  U16 lines = 0;
   init_game_board (board);
   init_piece_board (piece, rand () % 7);
   struct timespec last_fall;
@@ -82,7 +82,7 @@ main (void)
   keypad (stdscr, TRUE);
   nodelay (stdscr, TRUE);
 
-  i16 ch;
+  I16 ch;
   while ((ch = getch ()) != 'q')
     {
       struct timespec now;
@@ -132,7 +132,7 @@ main (void)
           if (!fall (board, piece, selected_rot))
             {
               add_piece_to_board (board, piece, selected_rot);
-              u8 new_lines = clear_rows (board);
+              U8 new_lines = clear_rows (board);
               lines += new_lines;
 
               switch (new_lines)

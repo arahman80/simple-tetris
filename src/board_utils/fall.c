@@ -1,20 +1,20 @@
 #include "board_utils.h"
 
-bool
-fall (u16 board[BOARD_HEIGHT], u16 piece[NUM_ROT][BOARD_HEIGHT],
-      i16 selected_rot)
+BOOL
+fall (U16 board[BOARD_HEIGHT], U16 piece[NUM_ROT][BOARD_HEIGHT],
+      I16 selected_rot)
 {
-  for (i16 i = 0; i < BOARD_HEIGHT - 1; i++)
+  for (I16 i = 0; i < BOARD_HEIGHT - 1; i++)
     {
       if (board[i + 1] & piece[selected_rot][i])
         {
-          return false;
+          return FALSE;
         }
     }
 
-  for (i16 i = 0; i < NUM_ROT; i++)
+  for (I16 i = 0; i < NUM_ROT; i++)
     {
-      for (i16 j = BOARD_HEIGHT - 1; j > 0; j--)
+      for (I16 j = BOARD_HEIGHT - 1; j > 0; j--)
         {
           piece[i][j] = piece[i][j - 1];
         }
@@ -22,5 +22,5 @@ fall (u16 board[BOARD_HEIGHT], u16 piece[NUM_ROT][BOARD_HEIGHT],
       piece[i][0] = 0b0000000000000000;
     }
 
-  return true;
+  return TRUE;
 }

@@ -1,7 +1,7 @@
 #include "makers.h"
 
 void
-make_t (u16 piece[NUM_ROT][BOARD_HEIGHT])
+make_t (U16 piece[NUM_ROT][BOARD_HEIGHT])
 {
   piece[0][0] = 0b0000000100000000;
   piece[0][1] = 0b0000001110000000;
