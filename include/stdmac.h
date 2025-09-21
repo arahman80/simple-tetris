@@ -4,6 +4,7 @@
 #define bool unsigned char
 #define true 1
 #define false 0
+#define u32 unsigned long
 #define u16 unsigned int
 #define u8 unsigned char
 #define i16 int
