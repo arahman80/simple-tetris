@@ -108,6 +108,7 @@ main (void)
           while (fall (board, piece, selected_rot))
             ;
           add_piece_to_board (board, piece, selected_rot);
+          clear_rows (board);
           init_piece_board (piece, rand () % 7);
           continue;
           break;
@@ -119,18 +120,18 @@ main (void)
           if (!fall (board, piece, selected_rot))
             {
               add_piece_to_board (board, piece, selected_rot);
+              clear_rows (board);
               init_piece_board (piece, rand () % 7);
               selected_rot = 0;
-              
+
               if (test_interference (board, piece, selected_rot))
-              {
-                endwin ();
-                return 0;
-              }
+                {
+                  endwin ();
+                  return 0;
+                }
             }
-          }
-          
-      clear_rows (board);
+        }
+
       erase ();
       print_bitboard (board, piece[selected_rot]);
 

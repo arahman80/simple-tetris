@@ -20,7 +20,7 @@ void init_piece_board (u16 piece[NUM_ROT][BOARD_HEIGHT],
 void add_piece_to_board (u16 board[BOARD_HEIGHT],
                          u16 piece[NUM_ROT][BOARD_HEIGHT], i16 selected_rot);
 bool fall (u16 board[BOARD_HEIGHT], u16 piece[NUM_ROT][BOARD_HEIGHT],
-          i16 selected_rot);
+           i16 selected_rot);
 void shift (u16 board[BOARD_HEIGHT], u16 piece[NUM_ROT][BOARD_HEIGHT],
             i16 selected_rot, i16 left);
 void clear_rows (u16 board[BOARD_HEIGHT]);
