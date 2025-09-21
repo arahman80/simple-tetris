@@ -4,11 +4,11 @@
 #define piece_t enum piece_t
 
 void
-init_piece_board (unsigned int piece[4][21], piece_t piece_type)
+init_piece_board (u16 piece[NUM_ROT][BOARD_HEIGHT], piece_t piece_type)
 {
-  for (int i = 0; i < 4; i++)
+  for (i16 i = 0; i < NUM_ROT; i++)
     {
-      for (int j = 0; j < 21; j++)
+      for (i16 j = 0; j < BOARD_HEIGHT; j++)
         {
           piece[i][j] = 0b0000000000000000;
         }

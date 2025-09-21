@@ -8,5 +8,9 @@
 #define u8 unsigned char
 #define i16 int
 #define i8 signed char
+#define BOARD_WITH_WALLS 0b0010000000000100
+#define FILLED_ROW 0b0011111111111100
+#define BOARD_HEIGHT 21
+#define NUM_ROT 4
 
 #endif

@@ -1,19 +1,20 @@
 #include "board_utils.h"
 
-int
-fall (unsigned int board[21], unsigned int piece[4][21], int selected_rot)
+bool
+fall (u16 board[BOARD_HEIGHT], u16 piece[NUM_ROT][BOARD_HEIGHT],
+      i16 selected_rot)
 {
-  for (int i = 0; i < 20; i++)
+  for (i16 i = 0; i < BOARD_HEIGHT - 1; i++)
     {
       if (board[i + 1] & piece[selected_rot][i])
         {
-          return 0;
+          return false;
         }
     }
 
-  for (int i = 0; i < 4; i++)
+  for (i16 i = 0; i < NUM_ROT; i++)
     {
-      for (int j = 20; j > 0; j--)
+      for (i16 j = BOARD_HEIGHT - 1; j > 0; j--)
         {
           piece[i][j] = piece[i][j - 1];
         }
@@ -21,5 +22,5 @@ fall (unsigned int board[21], unsigned int piece[4][21], int selected_rot)
       piece[i][0] = 0b0000000000000000;
     }
 
-  return 1;
+  return true;
 }

@@ -1,10 +1,10 @@
 #include "board_utils.h"
 
 void
-shift (unsigned int board[21], unsigned int piece[4][21], int selected_rot,
-       int left)
+shift (u16 board[BOARD_HEIGHT], u16 piece[NUM_ROT][BOARD_HEIGHT],
+       i16 selected_rot, i16 left)
 {
-  for (int i = 0; i < 21; i++)
+  for (i16 i = 0; i < BOARD_HEIGHT; i++)
     {
       if (board[i]
           & (left ? piece[selected_rot][i] << 1 : piece[selected_rot][i] >> 1))
@@ -13,18 +13,18 @@ shift (unsigned int board[21], unsigned int piece[4][21], int selected_rot,
         }
     }
 
-  for (int i = 0; i < 21; i++)
+  for (i16 i = 0; i < BOARD_HEIGHT; i++)
     {
       if (left)
         {
-          for (int j = 0; j < 4; j++)
+          for (i16 j = 0; j < NUM_ROT; j++)
             {
               piece[j][i] <<= 1;
             }
         }
       else
         {
-          for (int j = 0; j < 4; j++)
+          for (i16 j = 0; j < NUM_ROT; j++)
             {
               piece[j][i] >>= 1;
             }

@@ -1,7 +1,7 @@
 #include "makers.h"
 
 void
-make_i (unsigned int piece[4][21])
+make_i (u16 piece[NUM_ROT][BOARD_HEIGHT])
 {
   piece[0][1] = 0b0000001111000000;
   piece[1][0] = 0b0000000010000000;

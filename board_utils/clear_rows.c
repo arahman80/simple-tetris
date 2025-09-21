@@ -1,13 +1,10 @@
 #include "board_utils.h"
 
-#define BOARD_WITH_WALLS 0b0010000000000100
-#define FILLED_ROW 0b0011111111111100
-
 void
-clear_rows (unsigned int board[21])
+clear_rows (u16 board[BOARD_HEIGHT])
 {
-  int dst = 19;
-  for (int src = 19; src >= 0; src--)
+  i16 dst = BOARD_HEIGHT - 2;
+  for (i16 src = BOARD_HEIGHT - 2; src >= 0; src--)
     {
       if ((board[src] & FILLED_ROW) != FILLED_ROW)
         {

@@ -6,21 +6,21 @@
 
 /* Externally dependent */
 void
-print_bitboard (unsigned int board_in[21], unsigned int piece_in[21])
+print_bitboard (u16 board_in[BOARD_HEIGHT], u16 piece_in[BOARD_HEIGHT])
 {
   start_color ();
   init_pair (1, COLOR_BLACK, COLOR_WHITE);
   init_pair (2, COLOR_BLACK, COLOR_BLACK);
 
-  for (int j = 0; j < 21; j++)
+  for (i16 j = 0; j < BOARD_HEIGHT; j++)
     {
-      unsigned int board = board_in[j];
-      unsigned int piece = piece_in[j];
-      for (int i = 15; i >= 0; i--)
+      u16 board = board_in[j];
+      u16 piece = piece_in[j];
+      for (i16 i = 15; i >= 0; i--)
         {
-          unsigned char bit1 = (board >> i) & 1;
-          unsigned char bit2 = (piece >> i) & 1;
-          unsigned char bit = bit1 | bit2;
+          u8 bit1 = (board >> i) & 1;
+          u8 bit2 = (piece >> i) & 1;
+          u8 bit = bit1 | bit2;
 
           if (bit)
             attron (COLOR_PAIR (1));
@@ -37,29 +37,29 @@ print_bitboard (unsigned int board_in[21], unsigned int piece_in[21])
   refresh ();
 }
 
-int
-test_interference (unsigned int board_in[21], unsigned int piece_in[4][21],
-                   int selected_rot)
+bool
+test_interference (u16 board_in[BOARD_HEIGHT],
+                   u16 piece_in[NUM_ROT][BOARD_HEIGHT], i16 selected_rot)
 {
-  for (int i = 0; i < 21; i++)
+  for (i16 i = 0; i < BOARD_HEIGHT; i++)
     {
       if (board_in[i] & piece_in[selected_rot][i])
         {
-          return 1;
+          return true;
         }
     }
 
-  return 0;
+  return false;
 }
 
 /* Externally dependent */
-int
+i16
 main (void)
 {
   srand (time (NULL));
-  unsigned int board[21] = { 0 };
-  unsigned int piece[4][21] = { 0 };
-  int selected_rot = 0;
+  u16 board[BOARD_HEIGHT] = { 0 };
+  u16 piece[NUM_ROT][BOARD_HEIGHT] = { 0 };
+  i16 selected_rot = 0;
   init_game_board (board);
   init_piece_board (piece, rand () % 7);
   struct timespec last_fall;
@@ -72,7 +72,7 @@ main (void)
   keypad (stdscr, TRUE);
   nodelay (stdscr, TRUE);
 
-  int ch;
+  i16 ch;
   while ((ch = getch ()) != 'q')
     {
       struct timespec now;
@@ -83,15 +83,15 @@ main (void)
       switch (ch)
         {
         case KEY_UP:
-          if (!test_interference (board, piece, (selected_rot + 1) % 4))
+          if (!test_interference (board, piece, (selected_rot + 1) % NUM_ROT))
             {
-              selected_rot = (selected_rot + 1) % 4;
+              selected_rot = (selected_rot + 1) % NUM_ROT;
             }
           break;
         case KEY_DOWN:
-          if (!test_interference (board, piece, (selected_rot - 1) % 4))
+          if (!test_interference (board, piece, (selected_rot - 1) % NUM_ROT))
             {
-              selected_rot = (selected_rot - 1) % 4;
+              selected_rot = (selected_rot - 1) % NUM_ROT;
             }
           break;
         case KEY_LEFT:

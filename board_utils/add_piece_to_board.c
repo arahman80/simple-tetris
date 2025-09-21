@@ -1,10 +1,10 @@
 #include "board_utils.h"
 
 void
-add_piece_to_board (unsigned int board[21], unsigned int piece[4][21],
-                    int selected_rot)
+add_piece_to_board (u16 board[BOARD_HEIGHT], u16 piece[NUM_ROT][BOARD_HEIGHT],
+                    i16 selected_rot)
 {
-  for (int i = 0; i < 21; i++)
+  for (i16 i = 0; i < BOARD_HEIGHT; i++)
     {
       board[i] |= piece[selected_rot][i];
     }
