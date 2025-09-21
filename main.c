@@ -4,14 +4,14 @@
 #include "board_utils/board_utils.h"
 
 /* Externally dependent */
-void print_bitboard(unsigned short board_in[21], unsigned short piece_in[21]) {
+void print_bitboard(unsigned int board_in[21], unsigned int piece_in[21]) {
     for (int j = 0; j < 21; j++) {
-        unsigned short board = board_in[j];
-        unsigned short piece = piece_in[j];
+        unsigned int board = board_in[j];
+        unsigned int piece = piece_in[j];
         for (int i = 15; i >= 0; i--) {
-            uint8_t bit1 = (board >> i) & 1;
-            uint8_t bit2 = (piece >> i) & 1;
-            uint8_t bit = bit1 | bit2;
+            unsigned char bit1 = (board >> i) & 1;
+            unsigned char bit2 = (piece >> i) & 1;
+            unsigned char bit = bit1 | bit2;
 
             mvaddch(j, 15 - i, bit ? '#' : ' ');
         }
@@ -20,7 +20,7 @@ void print_bitboard(unsigned short board_in[21], unsigned short piece_in[21]) {
     refresh();
 }
 
-int test_interference(unsigned short board_in[21], unsigned short piece_in[4][21], int selected_rot) {
+int test_interference(unsigned int board_in[21], unsigned int piece_in[4][21], int selected_rot) {
     for (int i = 0; i < 21; i++) {
         if (board_in[i] & piece_in[selected_rot][i]) {
             return 1;
@@ -32,8 +32,8 @@ int test_interference(unsigned short board_in[21], unsigned short piece_in[4][21
 
 /* Externally dependent */
 int main(void) {
-    unsigned short board[21] = {0};
-    unsigned short piece[4][21] = {0};
+    unsigned int board[21] = {0};
+    unsigned int piece[4][21] = {0};
     int selected_rot = 0;
     init_game_board(board);
     init_piece_board(piece, PIECE_I);
@@ -87,6 +87,7 @@ int main(void) {
             last_fall = now;
             if (!fall(board, piece, selected_rot)) {
                 add_piece_to_board(board, piece, selected_rot);
+                clear_rows(board);
                 init_piece_board(piece, PIECE_I);
                 selected_rot = 0;
 
@@ -96,8 +97,6 @@ int main(void) {
                 }
             }
         }
-
-        clear_rows(board);
         erase();
         print_bitboard(board, piece[selected_rot]);
 

@@ -1,6 +1,6 @@
 #include "board_utils.h"
 
-void shift(unsigned short board[21], unsigned short piece[4][21], int selected_rot, int left) {
+void shift(unsigned int board[21], unsigned int piece[4][21], int selected_rot, int left) {
     for (int i = 0; i < 21; i++) {
         if (board[i] & (left ? piece[selected_rot][i] << 1 :
                                piece[selected_rot][i] >> 1)) {

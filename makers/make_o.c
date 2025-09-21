@@ -1,6 +1,6 @@
 #include "makers.h"
 
-void make_o(unsigned short piece[4][21]) {
+void make_o(unsigned int piece[4][21]) {
     piece[0][0] = 0b0000000110000000;
     piece[0][1] = 0b0000000110000000;
 
