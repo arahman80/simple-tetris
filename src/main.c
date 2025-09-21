@@ -4,10 +4,12 @@
 #include <time.h>
 #include <unistd.h>
 
+typedef struct score_info score_info_t;
+
 /* Externally dependent */
 void
 print_bitboard (U16 board_in[BOARD_HEIGHT], U16 piece_in[BOARD_HEIGHT],
-                U32 score, U16 lines, U16 level)
+                score_info_t score)
 {
   start_color ();
   init_pair (1, COLOR_BLACK, COLOR_WHITE);
@@ -34,9 +36,9 @@ print_bitboard (U16 board_in[BOARD_HEIGHT], U16 piece_in[BOARD_HEIGHT],
           attroff (COLOR_PAIR (2));
         }
     }
-  mvprintw (1, 16, "Level %u", level);
-  mvprintw (2, 16, "Score: %lu", score);
-  mvprintw (3, 16, "Lines: %u", lines);
+  mvprintw (1, 16, "Level %u", score.level);
+  mvprintw (2, 16, "Score: %lu", score.score);
+  mvprintw (3, 16, "Lines: %u", score.lines);
   refresh ();
 }
 
@@ -48,9 +50,7 @@ main (void)
   U16 board[BOARD_HEIGHT] = { 0 };
   U16 piece[NUM_ROT][BOARD_HEIGHT] = { 0 };
   I16 selected_rot = 0;
-  U16 level = 1;
-  U32 score = 0;
-  U16 lines = 0;
+  score_info_t score = { 1, 0, 0, 0 };
   init_game_board (board);
   init_piece_board (piece, rand () % 7);
   struct timespec last_fall;
@@ -98,14 +98,14 @@ main (void)
         case 'f':
           if (fall (board, piece, selected_rot))
             {
-              score += 1;
+              score.score += 1;
             }
           continue;
           break;
         case ' ':
           while (fall (board, piece, selected_rot))
             {
-              score += 2;
+              score.score += 2;
             }
           elapsed = FALL_PERIOD;
           break;
@@ -118,25 +118,7 @@ main (void)
             {
               add_piece_to_board (board, piece, selected_rot);
               U8 new_lines = clear_rows (board);
-              lines += new_lines;
-
-              switch (new_lines)
-                {
-                case 1:
-                  score += 100 * level;
-                  break;
-                case 2:
-                  score += 300 * level;
-                  break;
-                case 3:
-                  score += 500 * level;
-                  break;
-                case 4:
-                  score += 800 * level;
-                  break;
-                default:
-                  break;
-                }
+              score = update_score (score, new_lines);
               init_piece_board (piece, rand () % 7);
               selected_rot = 0;
 
@@ -149,7 +131,7 @@ main (void)
         }
 
       erase ();
-      print_bitboard (board, piece[selected_rot], score, lines, level);
+      print_bitboard (board, piece[selected_rot], score);
       nanosleep (&frame_delay, NULL);
     }
 

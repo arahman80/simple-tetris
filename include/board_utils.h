@@ -14,6 +14,14 @@ enum piece_t
   PIECE_J
 };
 
+struct score_info
+{
+  U16 level;
+  U32 score;
+  U16 lines;
+  U16 lines_this_level;
+};
+
 void init_game_board (U16 board[BOARD_HEIGHT]);
 void init_piece_board (U16 piece[NUM_ROT][BOARD_HEIGHT],
                        enum piece_t piece_type);
@@ -26,5 +34,7 @@ void shift (U16 board[BOARD_HEIGHT], U16 piece[NUM_ROT][BOARD_HEIGHT],
 U8 clear_rows (U16 board[BOARD_HEIGHT]);
 BOOL test_interference (U16 board_in[BOARD_HEIGHT],
                         U16 piece_in[NUM_ROT][BOARD_HEIGHT], I16 selected_rot);
+
+struct score_info update_score (struct score_info info, U8 new_lines);
 
 #endif
