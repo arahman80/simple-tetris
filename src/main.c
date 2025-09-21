@@ -1,3 +1,6 @@
+#define _POSIX_C_SOURCE 199309L
+#define _XOPEN_SOURCE 700
+
 #include "board_utils.h"
 #include <ncurses.h>
 #include <stdlib.h>
@@ -135,7 +138,10 @@ main (void)
       erase ();
       print_bitboard (board, piece[selected_rot]);
 
-      usleep (50000);
+      struct timespec delay;
+      delay.tv_sec = BASE_US_BETWEEN_FRAMES / 1000000;
+      delay.tv_nsec = (BASE_US_BETWEEN_FRAMES % 1000000) * 1000;
+      nanosleep(&delay, NULL);
     }
 
   endwin ();
