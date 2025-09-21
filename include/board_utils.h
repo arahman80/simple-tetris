@@ -3,7 +3,7 @@
 
 #include "stdmac.h"
 
-enum piece_t
+enum piece
 {
   PIECE_O,
   PIECE_T,
@@ -16,7 +16,7 @@ enum piece_t
 
 void init_game_board (U16 board[BOARD_HEIGHT]);
 void init_piece_board (U16 piece[NUM_ROT][BOARD_HEIGHT],
-                       enum piece_t piece_type);
+                       enum piece piece_type);
 void add_piece_to_board (U16 board[BOARD_HEIGHT],
                          U16 piece[NUM_ROT][BOARD_HEIGHT], I16 selected_rot);
 BOOL fall (U16 board[BOARD_HEIGHT], U16 piece[NUM_ROT][BOARD_HEIGHT],

@@ -1,7 +1,7 @@
 #include "board_utils.h"
 #include "makers.h"
 
-#define piece_t enum piece_t
+typedef enum piece piece_t;
 
 void
 init_piece_board (U16 piece[NUM_ROT][BOARD_HEIGHT], piece_t piece_type)
