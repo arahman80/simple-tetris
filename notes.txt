@@ -8,6 +8,10 @@ info:
     8 rst instructions
     rst 0x28 -> gateway to syscall jump table
     bcall is expanded to:
-        rst 0x28
-        .db <offset>
+        rst 0x28     ; jump to rom dispatcher
+        .dw <offset> ; 16-bit little endian offset
+    
+    if assembler doesn't have .dw:
+        .db offset & 0xFF, (offset >> 8) & 0xFF
+    
     offsets will be derived from ti83plus.inc
