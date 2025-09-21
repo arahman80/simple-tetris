@@ -13,5 +13,6 @@
 #define BOARD_HEIGHT 21
 #define NUM_ROT 4
 #define BASE_US_BETWEEN_FRAMES 50000
+#define FALL_PERIOD 0.25
 
 #endif
