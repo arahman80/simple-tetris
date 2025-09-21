@@ -1,6 +1,6 @@
 # Compiler and flags
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -OS
+CFLAGS = -Wall -Wextra -Werror -Os
 LIBS = -lncurses
 
 # Directories

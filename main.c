@@ -1,5 +1,6 @@
 #include "board_utils/board_utils.h"
 #include <ncurses.h>
+#include <stdlib.h>
 #include <time.h>
 #include <unistd.h>
 
@@ -7,6 +8,10 @@
 void
 print_bitboard (unsigned int board_in[21], unsigned int piece_in[21])
 {
+  start_color ();
+  init_pair (1, COLOR_BLACK, COLOR_WHITE);
+  init_pair (2, COLOR_BLACK, COLOR_BLACK);
+
   for (int j = 0; j < 21; j++)
     {
       unsigned int board = board_in[j];
@@ -17,7 +22,15 @@ print_bitboard (unsigned int board_in[21], unsigned int piece_in[21])
           unsigned char bit2 = (piece >> i) & 1;
           unsigned char bit = bit1 | bit2;
 
-          mvaddch (j, 15 - i, bit ? '#' : ' ');
+          if (bit)
+            attron (COLOR_PAIR (1));
+          else
+            attron (COLOR_PAIR (2));
+
+          mvaddch (j, 15 - i, ' ');
+
+          attroff (COLOR_PAIR (1));
+          attroff (COLOR_PAIR (2));
         }
     }
 
@@ -43,11 +56,12 @@ test_interference (unsigned int board_in[21], unsigned int piece_in[4][21],
 int
 main (void)
 {
+  srand (time (NULL));
   unsigned int board[21] = { 0 };
   unsigned int piece[4][21] = { 0 };
   int selected_rot = 0;
   init_game_board (board);
-  init_piece_board (piece, PIECE_I);
+  init_piece_board (piece, rand () % 7);
   struct timespec last_fall;
   clock_gettime (CLOCK_MONOTONIC, &last_fall);
 
@@ -94,19 +108,19 @@ main (void)
           while (fall (board, piece, selected_rot))
             ;
           add_piece_to_board (board, piece, selected_rot);
-          init_piece_board (piece, PIECE_I);
+          init_piece_board (piece, rand () % 7);
           continue;
           break;
         }
 
-      if (elapsed >= 0.1)
+      if (elapsed >= 0.25)
         {
           last_fall = now;
           if (!fall (board, piece, selected_rot))
             {
               add_piece_to_board (board, piece, selected_rot);
               clear_rows (board);
-              init_piece_board (piece, PIECE_I);
+              init_piece_board (piece, rand () % 7);
               selected_rot = 0;
 
               if (test_interference (board, piece, selected_rot))
