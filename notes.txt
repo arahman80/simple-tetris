@@ -3,3 +3,11 @@ useful links:
     https://github.com/z88dk/z88dk/wiki
     https://github.com/z88dk/z88dk/wiki/Platform
     https://education.ti.com/html/eguides/discontinued/computer-software/EN/SDK-TI-83-Developer-Guide_EN.pdf
+
+info:
+    8 rst instructions
+    rst 0x28 -> gateway to syscall jump table
+    bcall is expanded to:
+        rst 0x28
+        .db <offset>
+    offsets will be derived from ti83plus.inc
