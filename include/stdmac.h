@@ -1,6 +1,9 @@
 #ifndef STDMAC_H
 #define STDMAC_H
 
+#define _POSIX_C_SOURCE 199309L
+#define _XOPEN_SOURCE 700
+
 #define bool unsigned char
 #define true 1
 #define false 0
