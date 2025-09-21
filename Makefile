@@ -18,6 +18,9 @@ OBJS = $(patsubst %.c,$(BUILD_DIR)/%.o,$(SRCS))
 # Target executable
 TARGET = $(BUILD_DIR)/tetris
 
+# Clang-format style (can be overridden)
+STYLE = GNU
+
 # Default rule
 all: $(TARGET)
 
@@ -35,8 +38,12 @@ $(BUILD_DIR)/%.o: %.c | $(BUILD_DIR)
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
 
+# Format all C and header files in place
+format:
+	clang-format -i -style=$(STYLE) $(SRCS) $(wildcard board_utils/*.h) $(wildcard makers/*.h)
+
 # Clean up
 clean:
 	rm -rf $(BUILD_DIR)
 
-.PHONY: all clean
+.PHONY: all clean format
