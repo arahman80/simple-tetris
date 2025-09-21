@@ -25,6 +25,6 @@ void shift (U16 board[BOARD_HEIGHT], U16 piece[NUM_ROT][BOARD_HEIGHT],
             I16 selected_rot, I16 left);
 U8 clear_rows (U16 board[BOARD_HEIGHT]);
 BOOL test_interference (U16 board_in[BOARD_HEIGHT],
-                   U16 piece_in[NUM_ROT][BOARD_HEIGHT], I16 selected_rot);
+                        U16 piece_in[NUM_ROT][BOARD_HEIGHT], I16 selected_rot);
 
 #endif
