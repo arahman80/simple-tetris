@@ -7,7 +7,7 @@
 typedef struct score_info score_info_t;
 
 /* Externally dependent */
-void
+U0
 print_bitboard (U16 board_in[BOARD_HEIGHT], U16 piece_in[BOARD_HEIGHT],
                 score_info_t score)
 {
@@ -44,7 +44,7 @@ print_bitboard (U16 board_in[BOARD_HEIGHT], U16 piece_in[BOARD_HEIGHT],
 
 /* Externally dependent */
 I16
-main (void)
+main (U0)
 {
   srand (time (NULL));
   U16 board[BOARD_HEIGHT] = { 0 };

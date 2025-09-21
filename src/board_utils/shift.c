@@ -1,6 +1,6 @@
 #include "board_utils.h"
 
-void
+U0
 shift (U16 board[BOARD_HEIGHT], U16 piece[NUM_ROT][BOARD_HEIGHT],
        I16 selected_rot, I16 left)
 {
