@@ -10,7 +10,7 @@
 /* Externally dependent */
 void
 print_bitboard (u16 board_in[BOARD_HEIGHT], u16 piece_in[BOARD_HEIGHT],
-                u32 score, u16 lines)
+                u32 score, u16 lines, u16 level)
 {
   start_color ();
   init_pair (1, COLOR_BLACK, COLOR_WHITE);
@@ -37,8 +37,9 @@ print_bitboard (u16 board_in[BOARD_HEIGHT], u16 piece_in[BOARD_HEIGHT],
           attroff (COLOR_PAIR (2));
         }
     }
-  mvprintw (1, 16, "Score: %lu", score);
-  mvprintw (2, 16, "Lines: %u", lines);
+  mvprintw (1, 16, "Level %u", level);
+  mvprintw (2, 16, "Score: %lu", score);
+  mvprintw (3, 16, "Lines: %u", lines);
   refresh ();
 }
 
@@ -166,7 +167,7 @@ main (void)
         }
 
       erase ();
-      print_bitboard (board, piece[selected_rot], score, lines);
+      print_bitboard (board, piece[selected_rot], score, lines, level);
       nanosleep (&frame_delay, NULL);
     }
 
