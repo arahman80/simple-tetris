@@ -1,6 +1,6 @@
 # Compiler and flags
-CC = gcc
-CFLAGS = -Wall -Wextra -Werror -Os -Iinclude
+CC = clang
+CFLAGS = -std=c99 -Wall -Wextra -Werror -Os -Iinclude
 LIBS = -lncurses
 
 # Directories

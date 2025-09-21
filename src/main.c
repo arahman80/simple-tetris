@@ -1,8 +1,8 @@
+#include "board_utils.h"
 #include <ncurses.h>
 #include <stdlib.h>
 #include <time.h>
 #include <unistd.h>
-#include "board_utils.h"
 
 /* Externally dependent */
 void
@@ -12,7 +12,7 @@ print_bitboard (u16 board_in[BOARD_HEIGHT], u16 piece_in[BOARD_HEIGHT])
   init_pair (1, COLOR_BLACK, COLOR_WHITE);
   init_pair (2, COLOR_BLACK, COLOR_BLACK);
 
-  for (i16 j = 0; j < BOARD_HEIGHT; j++)
+  for (i16 j = 0; j < BOARD_HEIGHT - 1; j++)
     {
       u16 board = board_in[j];
       u16 piece = piece_in[j];
@@ -119,18 +119,18 @@ main (void)
           if (!fall (board, piece, selected_rot))
             {
               add_piece_to_board (board, piece, selected_rot);
-              clear_rows (board);
               init_piece_board (piece, rand () % 7);
               selected_rot = 0;
-
+              
               if (test_interference (board, piece, selected_rot))
-                {
-                  endwin ();
-                  return 0;
-                }
+              {
+                endwin ();
+                return 0;
+              }
             }
-        }
-
+          }
+          
+      clear_rows (board);
       erase ();
       print_bitboard (board, piece[selected_rot]);
 

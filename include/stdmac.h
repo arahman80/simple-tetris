@@ -1,7 +1,7 @@
 #ifndef STDMAC_H
 #define STDMAC_H
 
-#define bool int
+#define bool unsigned char
 #define true 1
 #define false 0
 #define u16 unsigned int
