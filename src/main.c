@@ -9,16 +9,16 @@ typedef struct tetris_bag tetris_bag_t;
 typedef struct game_state game_state_t;
 
 /* Externally dependent */
-void
+U0
 print_bitboard (game_state_t* state, score_info_t* score)
 {
-  const int board_width = 10;
+  const I8 board_width = 10;
 
-  for (int j = 0; j < BOARD_HEIGHT - 1; j++)
+  for (I8 j = 0; j < BOARD_HEIGHT - 1; j++)
   {
     mvprintw (j, 0, "<!");
 
-    for (int i = 0; i < board_width; i++)
+    for (I8 i = 0; i < board_width; i++)
     {
       U16 board = state->board[j];
       U16 piece = state->piece[state->selected_rot][j];
@@ -39,9 +39,9 @@ print_bitboard (game_state_t* state, score_info_t* score)
     mvprintw (j, 2 + board_width * 3, ">!");
   }
 
-  int bottom_y = BOARD_HEIGHT - 1;
+  I8 bottom_y = BOARD_HEIGHT - 1;
   mvprintw (bottom_y, 0, "<!");
-  for (int i = 0; i < board_width; i++)
+  for (I8 i = 0; i < board_width; i++)
   {
     printw ("===");
   }
@@ -49,7 +49,7 @@ print_bitboard (game_state_t* state, score_info_t* score)
 
   bottom_y++;
   mvprintw (bottom_y, 0, "\\/\\/\\/");
-  for (int i = 1; i < board_width - 2; i++)
+  for (I8 i = 1; i < board_width - 2; i++)
   {
     printw ("\\/\\/");
   }
@@ -96,34 +96,26 @@ main (U0)
     switch (ch)
     {
     case KEY_UP:
-      state.selected_rot = (state.selected_rot + 1) % NUM_ROT;
-      if (test_interference (&state))
-      {
-        state.selected_rot = (state.selected_rot - 1) % NUM_ROT;
-      }
+      do_rotation (&state, TRUE, state.piece_type == PIECE_I);
       break;
     case KEY_DOWN:
-      state.selected_rot = (state.selected_rot - 1) % NUM_ROT;
-      if (test_interference (&state))
-      {
-        state.selected_rot = (state.selected_rot + 1) % NUM_ROT;
-      }
+      do_rotation (&state, FALSE, state.piece_type == PIECE_I);
       break;
     case KEY_LEFT:
-      shift (&state, TRUE);
+      h_shift (&state, 1, TRUE, FALSE);
       break;
     case KEY_RIGHT:
-      shift (&state, FALSE);
+      h_shift (&state, 1, FALSE, FALSE);
       break;
     case 'f':
-      if (fall (&state))
+      if (v_shift (&state, 1, FALSE))
       {
         score.score += 1;
       }
       continue;
       break;
     case ' ':
-      while (fall (&state))
+      while (v_shift (&state, 1, FALSE))
       {
         score.score += 2;
       }
@@ -142,7 +134,7 @@ main (U0)
     if (elapsed >= FALL_PERIOD)
     {
       last_fall = now;
-      if (!fall (&state))
+      if (!v_shift (&state, 1, FALSE))
       {
         add_piece_to_board (&state);
         U8 new_lines = clear_rows (&state);

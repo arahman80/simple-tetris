@@ -3,7 +3,7 @@
 typedef struct game_state game_state_t;
 
 I8
-clear_rows (struct game_state* state)
+clear_rows (game_state_t* state)
 {
   I8 dst = BOARD_HEIGHT - 2;
   I8 cleared_count = 0;
@@ -20,5 +20,6 @@ clear_rows (struct game_state* state)
     state->board[dst--] = BOARD_WITH_WALLS;
     cleared_count++;
   }
+
   return cleared_count;
 }

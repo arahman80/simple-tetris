@@ -5,7 +5,7 @@ typedef enum piece piece_t;
 typedef struct game_state game_state_t;
 
 U0
-init_piece_board (struct game_state* state)
+init_piece_board (game_state_t* state)
 {
   for (I8 i = 0; i < NUM_ROT; i++)
   {
