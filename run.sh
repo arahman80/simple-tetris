@@ -1,14 +1,17 @@
 #!/bin/bash
 
-if [[ " $@ " =~ " -r " ]] || [[ " $@ " =~ " --refresh " ]]; then
-    make format
+make format
+
+if [[ " $@ " =~ " -d " ]] || [[ " $@ " =~ " --debug " ]]; then
+    make clean && make debug
+elif [[ " $@ " =~ " -r " ]] || [[ " $@ " =~ " --refresh " ]]; then
     make clean && make
 else
-    make format
     make -j$(nproc)
 fi
 
-echo "Press any key to continue"
+
+echo "Press enter to continue"
 read dummy
 
 ./build/tetris
