@@ -5,8 +5,8 @@
 typedef struct game_state game_state_t;
 typedef struct kick kick_t;
 
-static void determine_from_to (U8* from, U8* to, U8 current_rot, BOOL clockwise);
-static BOOL attempt_kick (game_state_t* state, U8 from, U8 to, const kick_t (*kicks)[NUM_ROT][5], I8 step);
+inline static void determine_from_to (U8* from, U8* to, U8 current_rot, BOOL clockwise);
+inline static BOOL attempt_kick (game_state_t* state, U8 from, U8 to, const kick_t (*kicks)[NUM_ROT][5], I8 step);
 
 void
 do_rotation (game_state_t* state, BOOL clockwise, BOOL is_I)
@@ -25,7 +25,7 @@ do_rotation (game_state_t* state, BOOL clockwise, BOOL is_I)
   }
 }
 
-static void
+inline static void
 determine_from_to (U8* from, U8* to, U8 current_rot, BOOL clockwise)
 {
   *from = current_rot;
@@ -40,7 +40,7 @@ determine_from_to (U8* from, U8* to, U8 current_rot, BOOL clockwise)
   }
 }
 
-static BOOL
+inline static BOOL
 attempt_kick (game_state_t* state, U8 from, U8 to, const kick_t (*kicks)[NUM_ROT][5], I8 step)
 {
   I8 x_shift = kicks[from][to][step].x;

@@ -3,10 +3,10 @@
 
 typedef struct game_state game_state_t;
 
-static BOOL check_shift (game_state_t* state, I8 dist, BOOL left);
-static U0 shift_left (game_state_t* state, I8 dist, I8 i);
-static U0 shift_right (game_state_t* state, I8 dist, I8 i);
-static U0 perform_shift (game_state_t* state, I8 dist, BOOL left);
+inline static BOOL check_shift (game_state_t* state, I8 dist, BOOL left);
+inline static U0 shift_left (game_state_t* state, I8 dist, I8 i);
+inline static U0 shift_right (game_state_t* state, I8 dist, I8 i);
+inline static U0 perform_shift (game_state_t* state, I8 dist, BOOL left);
 
 BOOL
 h_shift (game_state_t* state, I8 dist, BOOL left, BOOL forced)
@@ -24,7 +24,7 @@ h_shift (game_state_t* state, I8 dist, BOOL left, BOOL forced)
   return TRUE;
 }
 
-static BOOL
+inline static BOOL
 check_shift (game_state_t* state, I8 dist, BOOL left)
 {
   for (I8 i = 0; i < BOARD_HEIGHT; i++)
@@ -39,7 +39,7 @@ check_shift (game_state_t* state, I8 dist, BOOL left)
   return TRUE;
 }
 
-static U0
+inline static U0
 shift_left (game_state_t* state, I8 dist, I8 i)
 {
   for (I8 j = 0; j < NUM_ROT; j++)
@@ -48,7 +48,7 @@ shift_left (game_state_t* state, I8 dist, I8 i)
   }
 }
 
-static U0
+inline static U0
 shift_right (game_state_t* state, I8 dist, I8 i)
 {
   for (I8 j = 0; j < NUM_ROT; j++)
@@ -57,7 +57,7 @@ shift_right (game_state_t* state, I8 dist, I8 i)
   }
 }
 
-static U0
+inline static U0
 perform_shift (game_state_t* state, I8 dist, BOOL left)
 {
   U0 (*shift_func) (game_state_t*, I8, I8) = left ? shift_left : shift_right;

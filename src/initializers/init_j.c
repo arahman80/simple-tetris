@@ -1,6 +1,6 @@
 #include "initializers.h"
 
-U0
+inline U0
 init_j (U16 piece[NUM_ROT][BOARD_HEIGHT])
 {
   piece[0][0] = 0x80 /* 0000000010000000 */;
