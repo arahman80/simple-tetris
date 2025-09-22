@@ -1,8 +1,7 @@
 #include "board_utils.h"
-#include <ncurses.h>
-#include <stdlib.h>
-#include <time.h>
-#include <unistd.h>
+#include <ncurses.h> // <-- For TUI - replace with equivalent TI syscalls
+#include <stdlib.h>  // <-- For RNG - replace with equivalent TI syscalls
+#include <time.h>    // <-- For timing - replace with equivalent TI syscalls
 
 typedef struct score_info score_info_t;
 
