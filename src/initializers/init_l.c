@@ -1,7 +1,7 @@
-#include "makers.h"
+#include "initializers.h"
 
 U0
-make_l (U16 piece[NUM_ROT][BOARD_HEIGHT])
+init_l (U16 piece[NUM_ROT][BOARD_HEIGHT])
 {
   piece[0][0] = 0b0000001000000000;
   piece[0][1] = 0b0000001110000000;

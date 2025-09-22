@@ -1,24 +1,26 @@
-#include "board_utils.h"
+#include "game_utils.h"
+#include "piece_select.h"
+#include "score.h"
 #include <ncurses.h> // <-- For TUI - replace with equivalent TI syscalls
 #include <time.h>    // <-- For timing - replace with equivalent TI syscalls
 
 typedef struct score_info score_info_t;
 typedef struct tetris_bag tetris_bag_t;
+typedef struct game_state game_state_t;
 
 /* Externally dependent */
 U0
-print_bitboard (U16 board_in[BOARD_HEIGHT], U16 piece_in[BOARD_HEIGHT],
-                score_info_t score)
+print_bitboard (game_state_t *state, score_info_t *score)
 {
   start_color ();
   init_pair (1, COLOR_BLACK, COLOR_WHITE);
   init_pair (2, COLOR_BLACK, COLOR_BLACK);
 
-  for (I16 j = 0; j < BOARD_HEIGHT - 1; j++)
+  for (U8 j = 0; j < BOARD_HEIGHT - 1; j++)
     {
-      U16 board = board_in[j];
-      U16 piece = piece_in[j];
-      for (I16 i = 15; i >= 0; i--)
+      U16 board = state->board[j];
+      U16 piece = state->piece[state->selected_rot][j];
+      for (U8 i = 15; i >= 0; i--)
         {
           U8 bit1 = (board >> i) & 1;
           U8 bit2 = (piece >> i) & 1;
@@ -35,9 +37,9 @@ print_bitboard (U16 board_in[BOARD_HEIGHT], U16 piece_in[BOARD_HEIGHT],
           attroff (COLOR_PAIR (2));
         }
     }
-  mvprintw (1, 16, "Level %u", score.level);
-  mvprintw (2, 16, "Score: %lu", score.score);
-  mvprintw (3, 16, "Lines: %u", score.lines);
+  mvprintw (1, 16, "Level %u", score->level);
+  mvprintw (2, 16, "Score: %u", score->score);
+  mvprintw (3, 16, "Lines: %u", score->lines);
   refresh ();
 }
 
@@ -46,14 +48,12 @@ I16
 main (U0)
 {
   tetris_bag_t bag;
+  game_state_t state;
   init_bag (&bag, 123);
-  U8 piece_type = next_piece (&bag);
-  U16 board[BOARD_HEIGHT] = { 0 };
-  U16 piece[NUM_ROT][BOARD_HEIGHT] = { 0 };
-  I16 selected_rot = 0;
+  state.piece_type = next_piece (&bag);
   score_info_t score = { 1, 0, 0, 0 };
-  init_game_board (board);
-  init_piece_board (piece, piece_type);
+  init_game_board (&state);
+  init_piece_board (&state);
   struct timespec last_fall;
   clock_gettime (CLOCK_MONOTONIC, &last_fall);
 
@@ -73,38 +73,47 @@ main (U0)
     {
       struct timespec now;
       clock_gettime (CLOCK_MONOTONIC, &now);
-      double elapsed = (now.tv_sec - last_fall.tv_sec)
-                       + (now.tv_nsec - last_fall.tv_nsec) / 1e9;
+      double elapsed = (now.tv_sec - last_fall.tv_sec) + (now.tv_nsec - last_fall.tv_nsec) / 1e9;
 
       switch (ch)
         {
         case KEY_UP:
-          if (!test_interference (board, piece, (selected_rot + 1) % NUM_ROT))
+          state.selected_rot = (state.selected_rot + 1) % NUM_ROT;
+          if (!test_interference (&state))
             {
-              selected_rot = (selected_rot + 1) % NUM_ROT;
+              state.selected_rot = (state.selected_rot + 1) % NUM_ROT;
+            }
+          else
+            {
+              state.selected_rot = (state.selected_rot - 1) % NUM_ROT;
             }
           break;
         case KEY_DOWN:
-          if (!test_interference (board, piece, (selected_rot - 1) % NUM_ROT))
+          state.selected_rot = (state.selected_rot - 1) % NUM_ROT;
+          if (!test_interference (&state))
             {
-              selected_rot = (selected_rot - 1) % NUM_ROT;
+              state.selected_rot = (state.selected_rot - 1) % NUM_ROT;
+            }
+          else
+            {
+              state.selected_rot = (state.selected_rot + 1) % NUM_ROT;
             }
           break;
         case KEY_LEFT:
-          shift (board, piece, selected_rot, 1);
+          shift (&state, TRUE);
           break;
         case KEY_RIGHT:
-          shift (board, piece, selected_rot, 0);
+          shift (&state, FALSE);
           break;
         case 'f':
-          if (fall (board, piece, selected_rot))
+          if (fall (&state))
             {
               score.score += 1;
             }
           continue;
           break;
         case ' ':
-          while (fall (board, piece, selected_rot))
+          while (fall (&state))
             {
               score.score += 2;
             }
@@ -115,16 +124,16 @@ main (U0)
       if (elapsed >= FALL_PERIOD)
         {
           last_fall = now;
-          if (!fall (board, piece, selected_rot))
+          if (!fall (&state))
             {
-              add_piece_to_board (board, piece, selected_rot);
-              U8 new_lines = clear_rows (board);
-              score = update_score (score, new_lines);
-              piece_type = next_piece (&bag);
-              init_piece_board (piece, piece_type);
-              selected_rot = 0;
+              add_piece_to_board (&state);
+              U8 new_lines = clear_rows (&state);
+              update_score (&score, new_lines);
+              state.piece_type = next_piece (&bag);
+              init_piece_board (&state);
+              state.selected_rot = 0;
 
-              if (test_interference (board, piece, selected_rot))
+              if (test_interference (&state))
                 {
                   endwin ();
                   return 0;
@@ -133,7 +142,7 @@ main (U0)
         }
 
       erase ();
-      print_bitboard (board, piece[selected_rot], score);
+      print_bitboard (&state, &score);
       nanosleep (&frame_delay, NULL);
     }
 

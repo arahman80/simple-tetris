@@ -10,8 +10,10 @@ OBJ_DIR = $(BUILD_DIR)/obj
 
 # Source files
 SRCS = $(wildcard $(SRC_DIR)/*.c) \
-       $(wildcard $(SRC_DIR)/board_utils/*.c) \
-       $(wildcard $(SRC_DIR)/makers/*.c)
+       $(wildcard $(SRC_DIR)/game_utils/*.c) \
+       $(wildcard $(SRC_DIR)/initializers/*.c) \
+	   $(wildcard $(SRC_DIR)/piece/*.c) \
+	   $(wildcard $(SRC_DIR)/piece_select/*.c)
 
 # Object files (mirrors src/ hierarchy inside build/obj/)
 OBJS = $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRCS))
