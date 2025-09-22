@@ -22,6 +22,7 @@ v_shift (game_state_t* state, I8 dist, BOOL forced)
   }
 
   perform_shift (state, dist);
+
   return TRUE;
 }
 

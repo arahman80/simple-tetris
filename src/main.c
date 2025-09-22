@@ -8,15 +8,93 @@ typedef struct score_info score_info_t;
 typedef struct tetris_bag tetris_bag_t;
 typedef struct game_state game_state_t;
 
+const char*
+piece_name (I8 type)
+{
+  switch (type)
+  {
+  case PIECE_I:
+    return "I piece";
+  case PIECE_O:
+    return "O piece";
+  case PIECE_T:
+    return "T piece";
+  case PIECE_S:
+    return "S piece";
+  case PIECE_Z:
+    return "Z piece";
+  case PIECE_J:
+    return "J piece";
+  case PIECE_L:
+    return "L piece";
+  default:
+    return "N/A";
+  }
+}
+
+static const U8 piece_shapes[][4] = {
+    {0b0000, 0b1111, 0b0000, 0b0000}, {0b0110, 0b0110, 0b0000, 0b0000}, {0b0100, 0b1110, 0b0000, 0b0000},
+    {0b0110, 0b1100, 0b0000, 0b0000}, {0b1100, 0b0110, 0b0000, 0b0000}, {0b1000, 0b1110, 0b0000, 0b0000},
+    {0b0010, 0b1110, 0b0000, 0b0000},
+};
+
+void
+draw_piece_preview (I8 y, I8 x, I8 piece_type)
+{
+  I8 idx = -1;
+  switch (piece_type)
+  {
+  case PIECE_I:
+    idx = 0;
+    break;
+  case PIECE_O:
+    idx = 1;
+    break;
+  case PIECE_T:
+    idx = 2;
+    break;
+  case PIECE_S:
+    idx = 3;
+    break;
+  case PIECE_Z:
+    idx = 4;
+    break;
+  case PIECE_J:
+    idx = 5;
+    break;
+  case PIECE_L:
+    idx = 6;
+    break;
+  default:
+    return;
+  }
+
+  for (I8 r = 0; r < 4; r++)
+  {
+    for (I8 c = 0; c < 4; c++)
+    {
+      if ((piece_shapes[idx][r] >> (3 - c)) & 1)
+      {
+        mvprintw (y + r, x + c * 3, "[ ]");
+      }
+      else
+      {
+        mvprintw (y + r, x + c * 3, "  ");
+      }
+    }
+  }
+}
+
 /* Externally dependent */
 U0
 print_bitboard (game_state_t* state, score_info_t* score)
 {
   const I8 board_width = 10;
+  const I8 x_offset = 13;
 
   for (I8 j = 0; j < BOARD_HEIGHT - 1; j++)
   {
-    mvprintw (j, 0, "<!");
+    mvprintw (j, x_offset + 0, "<!");
 
     for (I8 i = 0; i < board_width; i++)
     {
@@ -28,19 +106,19 @@ print_bitboard (game_state_t* state, score_info_t* score)
 
       if (bit)
       {
-        mvprintw (j, 2 + i * 3, "[ ]");
+        mvprintw (j, x_offset + 2 + i * 3, "[ ]");
       }
       else
       {
-        mvprintw (j, 2 + i * 3, " . ");
+        mvprintw (j, x_offset + 2 + i * 3, " . ");
       }
     }
 
-    mvprintw (j, 2 + board_width * 3, ">!");
+    mvprintw (j, x_offset + 2 + board_width * 3, ">!");
   }
 
   I8 bottom_y = BOARD_HEIGHT - 1;
-  mvprintw (bottom_y, 0, "<!");
+  mvprintw (bottom_y, x_offset + 0, "<!");
   for (I8 i = 0; i < board_width; i++)
   {
     printw ("===");
@@ -48,15 +126,27 @@ print_bitboard (game_state_t* state, score_info_t* score)
   printw (">!");
 
   bottom_y++;
-  mvprintw (bottom_y, 0, "\\/\\/\\/");
+  mvprintw (bottom_y, x_offset + 0, "\\/\\/\\/");
   for (I8 i = 1; i < board_width - 2; i++)
   {
     printw ("\\/\\/");
   }
 
-  mvprintw (1, 36, "Level %u", score->level);
-  mvprintw (2, 36, "Score: %u", score->score);
-  mvprintw (3, 36, "Lines: %u", score->lines);
+  mvprintw (1, x_offset + 36, "Level %u", score->level);
+  mvprintw (2, x_offset + 36, "Score: %u", score->score);
+  mvprintw (3, x_offset + 36, "Lines: %u", score->lines);
+
+  mvprintw (5, x_offset + 36, "Held:");
+  mvprintw (6, x_offset + 36, "%s", piece_name (state->held_piece_type));
+
+  mvprintw (8, x_offset + 36, "Next:");
+  mvprintw (9, x_offset + 36, "%s", piece_name (state->next_piece_type));
+
+  mvprintw (2, 0, "Held:");
+  draw_piece_preview (3, 0, state->held_piece_type);
+
+  mvprintw (10, 0, "Next:");
+  draw_piece_preview (11, 0, state->next_piece_type);
 
   refresh ();
 }
@@ -69,6 +159,9 @@ main (U0)
   game_state_t state = {0};
   init_bag (&bag, 123);
   state.piece_type = next_piece (&bag);
+  state.next_piece_type = next_piece (&bag);
+  state.held_piece_type = next_piece (&bag);
+  U8 placeholder = -1;
   score_info_t score = {1, 0, 0, 0};
   init_game_board (&state);
   init_piece_board (&state);
@@ -126,8 +219,20 @@ main (U0)
       nodelay (stdscr, FALSE);
       ch = getch ();
       nodelay (stdscr, TRUE);
+    case 'h':
+      if (placeholder < 0)
+      {
+        state.held_piece_type = state.next_piece_type;
+        state.next_piece_type = next_piece (&bag);
+      }
+      else
+      {
+        placeholder = state.held_piece_type;
+        state.held_piece_type = state.next_piece_type;
+        state.next_piece_type = placeholder;
+      }
     default:
-      /* Consider default case */
+      /* Consider adding default case */
       break;
     }
 
@@ -139,7 +244,8 @@ main (U0)
         add_piece_to_board (&state);
         U8 new_lines = clear_rows (&state);
         update_score (&score, new_lines);
-        state.piece_type = next_piece (&bag);
+        state.piece_type = state.next_piece_type;
+        state.next_piece_type = next_piece (&bag);
         init_piece_board (&state);
         state.selected_rot = 0;
 
