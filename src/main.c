@@ -1,9 +1,9 @@
 #include "board_utils.h"
 #include <ncurses.h> // <-- For TUI - replace with equivalent TI syscalls
-#include <stdlib.h>  // <-- For RNG - replace with equivalent TI syscalls
 #include <time.h>    // <-- For timing - replace with equivalent TI syscalls
 
 typedef struct score_info score_info_t;
+typedef struct tetris_bag tetris_bag_t;
 
 /* Externally dependent */
 U0
@@ -45,13 +45,15 @@ print_bitboard (U16 board_in[BOARD_HEIGHT], U16 piece_in[BOARD_HEIGHT],
 I16
 main (U0)
 {
-  srand (time (NULL));
+  tetris_bag_t bag;
+  init_bag (&bag, 123);
+  U8 piece_type = next_piece (&bag);
   U16 board[BOARD_HEIGHT] = { 0 };
   U16 piece[NUM_ROT][BOARD_HEIGHT] = { 0 };
   I16 selected_rot = 0;
   score_info_t score = { 1, 0, 0, 0 };
   init_game_board (board);
-  init_piece_board (piece, rand () % 7);
+  init_piece_board (piece, piece_type);
   struct timespec last_fall;
   clock_gettime (CLOCK_MONOTONIC, &last_fall);
 
@@ -118,7 +120,8 @@ main (U0)
               add_piece_to_board (board, piece, selected_rot);
               U8 new_lines = clear_rows (board);
               score = update_score (score, new_lines);
-              init_piece_board (piece, rand () % 7);
+              piece_type = next_piece (&bag);
+              init_piece_board (piece, piece_type);
               selected_rot = 0;
 
               if (test_interference (board, piece, selected_rot))
