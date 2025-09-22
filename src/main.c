@@ -22,8 +22,8 @@ print_bitboard (game_state_t *state, score_info_t *score)
       U16 piece = state->piece[state->selected_rot][j];
       for (I8 i = 15; i >= 0; i--)
         {
-          U8 bit1 = (U8) ((UCAST board >> i) & 1);
-          U8 bit2 = (U8) ((UCAST piece >> i) & 1);
+          U8 bit1 = (U8) (((unsigned) board >> i) & 1);
+          U8 bit2 = (U8) (((unsigned) piece >> i) & 1);
           U8 bit = bit1 | bit2;
 
           if (bit)
