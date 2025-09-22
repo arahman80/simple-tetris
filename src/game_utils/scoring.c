@@ -23,9 +23,8 @@ update_score (score_info_t* info, U8 new_lines)
     break;
   }
 
-
   info->lines += new_lines;
-  infi->lines_this_level += new_lines;
+  info->lines_this_level += new_lines;
 
   if (info->lines_this_level >= info->level * 10)
   {
