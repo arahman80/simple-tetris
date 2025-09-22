@@ -20,7 +20,7 @@ fall (struct game_state *state)
           state->piece[i][j] = state->piece[i][j - 1];
         }
 
-      state->piece[i][0] = 0b0000000000000000;
+      state->piece[i][0] = 0x0 /* 0000000000000000 */;
     }
 
   return TRUE;

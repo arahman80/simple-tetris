@@ -1,6 +1,6 @@
 # Compiler and flags
 CC = clang
-CFLAGS = -std=c99 -Wall -Wextra -Werror -O0 -Iinclude -g
+CFLAGS = -std=c99 -Wall -Wextra -Werror -Os -Iinclude
 LIBS = -lncurses
 
 # Directories
@@ -43,6 +43,21 @@ $(BUILD_DIR):
 $(OBJ_DIR):
 	mkdir -p $(OBJ_DIR)
 
+# Debug target
+DEBUG_TARGET = $(BUILD_DIR)/tetris_debug
+DEBUG_FLAGS = -std=c99 -Wall -Wextra -Werror -Wpedantic -O0 -g -Iinclude
+
+debug: $(DEBUG_TARGET)
+
+# Link debug executable
+$(DEBUG_TARGET): $(OBJS) | $(BUILD_DIR)
+	$(CC) $(DEBUG_FLAGS) -o $@ $^ $(LIBS)
+
+# Compile source files for debug
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
+	@mkdir -p $(dir $@)
+	$(CC) $(DEBUG_FLAGS) -c $< -o $@
+
 # Format all C and header files
 format:
 	clang-format -i -style=$(STYLE) $(SRCS) $(wildcard include/*.h)
@@ -58,4 +73,4 @@ tidy:
 clean:
 	rm -rf $(BUILD_DIR)
 
-.PHONY: all clean format lint
+.PHONY: all clean format lint debug

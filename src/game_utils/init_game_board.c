@@ -10,5 +10,5 @@ init_game_board (struct game_state *state)
       state->board[i] = BOARD_WITH_WALLS;
     }
 
-  state->board[BOARD_HEIGHT - 1] = 0b1111111111111111;
+  state->board[BOARD_HEIGHT - 1] = 0xFFFF /* 1111111111111111 */;
 }

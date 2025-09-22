@@ -11,7 +11,7 @@ init_piece_board (struct game_state *state)
     {
       for (I8 j = 0; j < BOARD_HEIGHT; j++)
         {
-          state->piece[i][j] = 0b0000000000000000;
+          state->piece[i][j] = 0x0 /* 0000000000000000 */;
         }
     }
 
