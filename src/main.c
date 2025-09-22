@@ -27,9 +27,13 @@ print_bitboard (game_state_t *state, score_info_t *score)
           U8 bit = bit1 | bit2;
 
           if (bit)
-            attron (COLOR_PAIR (1));
+            {
+              attron (COLOR_PAIR (1));
+            }
           else
-            attron (COLOR_PAIR (2));
+            {
+              attron (COLOR_PAIR (2));
+            }
 
           mvaddch (j, 15 - i, ' ');
 
@@ -58,8 +62,8 @@ main (U0)
   clock_gettime (CLOCK_MONOTONIC, &last_fall);
 
   struct timespec frame_delay = { 0 };
-  frame_delay.tv_sec = BASE_US_BETWEEN_FRAMES / 1000000;
-  frame_delay.tv_nsec = (BASE_US_BETWEEN_FRAMES % 1000000) * 1000;
+  frame_delay.tv_sec = (__syscall_slong_t) BASE_US_BETWEEN_FRAMES / 1000000;
+  frame_delay.tv_nsec = (__syscall_slong_t) (BASE_US_BETWEEN_FRAMES % 1000000) * 1000;
 
   initscr ();
   noecho ();
@@ -80,22 +84,14 @@ main (U0)
         {
         case KEY_UP:
           state.selected_rot = (state.selected_rot + 1) % NUM_ROT;
-          if (!test_interference (&state))
-            {
-              state.selected_rot = (state.selected_rot + 1) % NUM_ROT;
-            }
-          else
+          if (test_interference (&state))
             {
               state.selected_rot = (state.selected_rot - 1) % NUM_ROT;
             }
           break;
         case KEY_DOWN:
           state.selected_rot = (state.selected_rot - 1) % NUM_ROT;
-          if (!test_interference (&state))
-            {
-              state.selected_rot = (state.selected_rot - 1) % NUM_ROT;
-            }
-          else
+          if (test_interference (&state))
             {
               state.selected_rot = (state.selected_rot + 1) % NUM_ROT;
             }

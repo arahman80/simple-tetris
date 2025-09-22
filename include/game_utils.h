@@ -19,7 +19,7 @@ struct game_state
   U16 board[BOARD_HEIGHT];
   U16 piece[NUM_ROT][BOARD_HEIGHT];
   enum piece piece_type;
-  I8 selected_rot;
+  U16 selected_rot;
 };
 
 U0 init_game_board (struct game_state *state);

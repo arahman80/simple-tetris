@@ -9,12 +9,18 @@ update_score (score_info_t *info, U8 new_lines)
     {
     case 1:
       info->score += 100 * info->level;
+      break;
     case 2:
       info->score += 300 * info->level;
+      break;
     case 3:
       info->score += 500 * info->level;
+      break;
     case 4:
       info->score += 800 * info->level;
+      break;
+    default:
+      break;
     }
 
   if (info->lines_this_level >= info->level * 10)

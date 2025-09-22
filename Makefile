@@ -48,8 +48,11 @@ format:
 	clang-format -i -style=$(STYLE) $(SRCS) $(wildcard include/*.h)
 
 # Run clang-tidy on all sources
-lint:
-	clang-tidy $(SRCS) -header-filter=.* -- $(CFLAGS) -fdiagnostics-color=always
+tidy:
+	clang-tidy $(SRCS) \
+		--checks=clang-analyzer-*,bugprone-*,hicpp-* \
+		-header-filter=.* \
+		-- $(CFLAGS) -fdiagnostics-color=always
 
 # Clean build artifacts
 clean:

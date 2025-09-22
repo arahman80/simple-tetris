@@ -15,6 +15,7 @@ typedef enum
 #define I16 int
 #define I8 signed char
 #define U0 void
+#define UCAST (unsigned)
 #define BOARD_WITH_WALLS 0b0010000000000100
 #define FILLED_ROW 0b0011111111111100
 #define BOARD_HEIGHT 21
