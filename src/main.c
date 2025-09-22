@@ -22,8 +22,8 @@ print_bitboard (game_state_t *state, score_info_t *score)
       U16 piece = state->piece[state->selected_rot][j];
       for (I8 i = 15; i >= 0; i--)
         {
-          U8 bit1 = (U8) (((unsigned) board >> i) & 1);
-          U8 bit2 = (U8) (((unsigned) piece >> i) & 1);
+          U8 bit1 = (U8)(((unsigned)board >> i) & 1);
+          U8 bit2 = (U8)(((unsigned)piece >> i) & 1);
           U8 bit = bit1 | bit2;
 
           if (bit)
@@ -62,9 +62,9 @@ main (U0)
   clock_gettime (CLOCK_MONOTONIC, &last_fall);
 
   struct timespec frame_delay = { 0 };
-  frame_delay.tv_sec = (__syscall_slong_t) BASE_US_BETWEEN_FRAMES / 1000000;
+  frame_delay.tv_sec = (__syscall_slong_t)BASE_US_BETWEEN_FRAMES / 1000000;
   frame_delay.tv_nsec
-      = (__syscall_slong_t) (BASE_US_BETWEEN_FRAMES % 1000000) * 1000;
+      = (__syscall_slong_t)(BASE_US_BETWEEN_FRAMES % 1000000) * 1000;
 
   initscr ();
   noecho ();
@@ -79,12 +79,14 @@ main (U0)
       struct timespec now;
       clock_gettime (CLOCK_MONOTONIC, &now);
       double elapsed = (double)(now.tv_sec - last_fall.tv_sec)
-                 + (double)(now.tv_nsec - last_fall.tv_nsec) / 1e9;
+                       + (double)(now.tv_nsec - last_fall.tv_nsec) / 1e9;
 
       switch (ch)
         {
         case KEY_UP:
-          state.selected_rot = (signed char) (((unsigned char) state.selected_rot + 1) % NUM_ROT);
+          state.selected_rot
+              = (signed char)(((unsigned char)state.selected_rot + 1)
+                              % NUM_ROT);
           if (test_interference (&state))
             {
               state.selected_rot = (state.selected_rot - 1) % NUM_ROT;
@@ -94,7 +96,9 @@ main (U0)
           state.selected_rot = (state.selected_rot - 1) % NUM_ROT;
           if (test_interference (&state))
             {
-              state.selected_rot = (signed char) (((unsigned char) state.selected_rot + 1) % NUM_ROT);
+              state.selected_rot
+                  = (signed char)(((unsigned char)state.selected_rot + 1)
+                                  % NUM_ROT);
             }
           break;
         case KEY_LEFT:
