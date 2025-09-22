@@ -8,7 +8,7 @@ else
     make -j$(nproc)
 fi
 
-echo "Press ENTER to continue..."
+echo "Press any key to continue"
 read dummy
 
 ./build/tetris
