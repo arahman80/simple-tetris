@@ -36,8 +36,8 @@ format:
 run: build
 	./$(TARGET)
 
-.PHONY: debug_run
-debug_run: $(DEBUG_TARGET)
+.PHONY: debug
+debug: $(DEBUG_TARGET)
 	./$(DEBUG_TARGET)
 
 # Static analysis
@@ -57,6 +57,13 @@ clean:
 .PHONY: update
 update:
 	git pull
+
+# Display targets
+.PHONY: help
+help:
+	@grep -E '^[[:space:]]*\.PHONY[[:space:]]*:' $(MAKEFILE_LIST) \
+		| sed 's/^[^:]*: //' \
+		| tr ' ' '\n'
 
 # Link executable
 $(TARGET): $(OBJS) | $(BUILD_DIR)
