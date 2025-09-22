@@ -83,7 +83,7 @@ main (U0)
     switch (ch)
     {
     case KEY_UP:
-      state.selected_rot = (signed char) (((unsigned char) state.selected_rot + 1) % NUM_ROT);
+      state.selected_rot = (state.selected_rot + 1) % NUM_ROT;
       if (test_interference (&state))
       {
         state.selected_rot = (state.selected_rot - 1) % NUM_ROT;
@@ -93,7 +93,7 @@ main (U0)
       state.selected_rot = (state.selected_rot - 1) % NUM_ROT;
       if (test_interference (&state))
       {
-        state.selected_rot = (signed char) (((unsigned char) state.selected_rot + 1) % NUM_ROT);
+        state.selected_rot = (state.selected_rot + 1) % NUM_ROT;
       }
       break;
     case KEY_LEFT:

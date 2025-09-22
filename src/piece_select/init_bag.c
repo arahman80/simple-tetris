@@ -2,7 +2,7 @@
 
 typedef struct tetris_bag tetris_bag_t;
 
-void
+u0
 init_bag (tetris_bag_t* bag, U8 seed)
 {
   bag->rng_state = seed;
