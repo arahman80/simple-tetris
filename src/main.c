@@ -16,11 +16,11 @@ print_bitboard (game_state_t *state, score_info_t *score)
   init_pair (1, COLOR_BLACK, COLOR_WHITE);
   init_pair (2, COLOR_BLACK, COLOR_BLACK);
 
-  for (U8 j = 0; j < BOARD_HEIGHT - 1; j++)
+  for (I8 j = 0; j < BOARD_HEIGHT - 1; j++)
     {
       U16 board = state->board[j];
       U16 piece = state->piece[state->selected_rot][j];
-      for (U8 i = 15; i >= 0; i--)
+      for (I8 i = 15; i >= 0; i--)
         {
           U8 bit1 = (board >> i) & 1;
           U8 bit2 = (piece >> i) & 1;
@@ -47,17 +47,17 @@ print_bitboard (game_state_t *state, score_info_t *score)
 I16
 main (U0)
 {
-  tetris_bag_t bag;
-  game_state_t state;
+  tetris_bag_t bag = { 0 };
+  game_state_t state = { 0 };
   init_bag (&bag, 123);
   state.piece_type = next_piece (&bag);
   score_info_t score = { 1, 0, 0, 0 };
   init_game_board (&state);
   init_piece_board (&state);
-  struct timespec last_fall;
+  struct timespec last_fall = { 0 };
   clock_gettime (CLOCK_MONOTONIC, &last_fall);
 
-  struct timespec frame_delay;
+  struct timespec frame_delay = { 0 };
   frame_delay.tv_sec = BASE_US_BETWEEN_FRAMES / 1000000;
   frame_delay.tv_nsec = (BASE_US_BETWEEN_FRAMES % 1000000) * 1000;
 
@@ -73,7 +73,8 @@ main (U0)
     {
       struct timespec now;
       clock_gettime (CLOCK_MONOTONIC, &now);
-      double elapsed = (now.tv_sec - last_fall.tv_sec) + (now.tv_nsec - last_fall.tv_nsec) / 1e9;
+      double elapsed = (now.tv_sec - last_fall.tv_sec)
+                       + (now.tv_nsec - last_fall.tv_nsec) / 1e9;
 
       switch (ch)
         {

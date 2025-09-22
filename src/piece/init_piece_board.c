@@ -7,9 +7,9 @@ typedef struct game_state game_state_t;
 U0
 init_piece_board (struct game_state *state)
 {
-  for (U8 i = 0; i < NUM_ROT; i++)
+  for (I8 i = 0; i < NUM_ROT; i++)
     {
-      for (U8 j = 0; j < BOARD_HEIGHT; j++)
+      for (I8 j = 0; j < BOARD_HEIGHT; j++)
         {
           state->piece[i][j] = 0b0000000000000000;
         }
