@@ -8,58 +8,60 @@ LIBS = -lncurses
 SRC_DIR = src
 BUILD_DIR = build
 OBJ_DIR = $(BUILD_DIR)/obj
+OBJ_DIR_DEBUG = $(BUILD_DIR)/obj_debug
 
-# Source files
-SRCS = $(wildcard $(SRC_DIR)/*.c) \
-       $(wildcard $(SRC_DIR)/game_utils/*.c) \
-       $(wildcard $(SRC_DIR)/initializers/*.c) \
-       $(wildcard $(SRC_DIR)/piece/*.c) \
-       $(wildcard $(SRC_DIR)/piece_select/*.c)
-
-# Object files
-OBJS = $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRCS))
+# Sources
+SRCS := $(wildcard $(SRC_DIR)/**/*.c $(SRC_DIR)/*.c)
+OBJS := $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRCS))
+OBJS_DEBUG := $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR_DEBUG)/%.o,$(SRCS))
 
 # Target executables
 TARGET = $(BUILD_DIR)/tetris
 DEBUG_TARGET = $(BUILD_DIR)/tetris_debug
 
-# Default rule
-all: $(TARGET)
-
-# Link executables
-$(TARGET): $(OBJS) | $(BUILD_DIR)
-	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
-
-$(DEBUG_TARGET): $(OBJS) | $(BUILD_DIR)
-	$(CC) $(DEBUG_FLAGS) -o $@ $^ $(LIBS)
-
-# Compile object files (generic rule)
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
-	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) -c $< -o $@
-
-# Compile object files for debug
-debug_objs := $(OBJS)
-debug: CFLAGS := $(DEBUG_FLAGS)
-debug: $(DEBUG_TARGET)
-
-# Ensure build directories exist
-$(BUILD_DIR) $(OBJ_DIR):
-	mkdir -p $@
-
-# Format
+.PHONY: format
 format:
 	clang-format -i $(SRCS) $(wildcard include/*.h)
 
-# Clang-tidy
+# Default rule
+.PHONY: all
+all: $(TARGET)
+
+.PHONY: run
+run: $(TARGET)
+	make format
+	./$(TARGET)
+
+.PHONY: debug
+debug: $(DEBUG_TARGET)
+	make format
+	./$(DEBUG_TARGET)
+
+.PHONY: tidy
 tidy:
 	clang-tidy $(SRCS) \
 		--checks=clang-analyzer-*,bugprone-*,hicpp-* \
 		-header-filter=.* \
 		-- $(CFLAGS) -fdiagnostics-color=always
 
-# Clean
+.PHONY: clean
 clean:
 	rm -rf $(BUILD_DIR)
 
-.PHONY: all clean format tidy debug
+$(TARGET): $(OBJS) | $(BUILD_DIR)
+	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
+
+$(DEBUG_TARGET): $(OBJS) | $(BUILD_DIR)
+	$(CC) $(DEBUG_FLAGS) -o $@ $^ $(LIBS)
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(OBJ_DIR_DEBUG)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR_DEBUG)
+	@mkdir -p $(dir $@)
+	$(CC) $(DEBUG_FLAGS) -c $< -o $@
+
+# Ensure build directories exist
+$(BUILD_DIR) $(OBJ_DIR):
+	mkdir -p $@
