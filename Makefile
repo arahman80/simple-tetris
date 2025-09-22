@@ -19,27 +19,36 @@ OBJS_DEBUG := $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR_DEBUG)/%.o,$(SRCS))
 TARGET = $(BUILD_DIR)/tetris
 DEBUG_TARGET = $(BUILD_DIR)/tetris_debug
 
+# ------------------------
+# Default goal: format + build
+# ------------------------
+.DEFAULT_GOAL := build_all
+
+.PHONY: build_all
+build_all: format $(TARGET)
+	@echo "Build complete: $(TARGET)"
+
+# ------------------------
 # Formatting
+# ------------------------
 .PHONY: format
 format:
-	clang-format -i $(SRCS) $(wildcard include/*.h)  # Auto-format sources and headers
+	clang-format -i $(SRCS) $(wildcard include/*.h)
 
-# Default build
-.PHONY: all
-all: $(TARGET)
-
+# ------------------------
 # Run targets
+# ------------------------
 .PHONY: run
-run: $(TARGET)
-	make format
+run: build
 	./$(TARGET)
 
-.PHONY: debug
-debug: $(DEBUG_TARGET)
-	make format
+.PHONY: debug_run
+debug_run: $(DEBUG_TARGET)
 	./$(DEBUG_TARGET)
 
+# ------------------------
 # Static analysis
+# ------------------------
 .PHONY: lint
 lint:
 	clang-tidy $(SRCS) \
@@ -47,24 +56,32 @@ lint:
 		-header-filter=.* \
 		-- $(CFLAGS) -fdiagnostics-color=always
 
+# ------------------------
 # Clean build artifacts
+# ------------------------
 .PHONY: clean
 clean:
 	rm -rf $(BUILD_DIR)
 
+# ------------------------
 # Pull from the remote repository
+# ------------------------
 .PHONY: update
 update:
 	git pull
 
+# ------------------------
 # Link executable
+# ------------------------
 $(TARGET): $(OBJS) | $(BUILD_DIR)
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 
 $(DEBUG_TARGET): $(OBJS) | $(BUILD_DIR)
 	$(CC) $(DEBUG_FLAGS) -o $@ $^ $(LIBS)
 
+# ------------------------
 # Compile object files
+# ------------------------
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
@@ -73,6 +90,8 @@ $(OBJ_DIR_DEBUG)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR_DEBUG)
 	@mkdir -p $(dir $@)
 	$(CC) $(DEBUG_FLAGS) -c $< -o $@
 
+# ------------------------
 # Ensure build directories exist
+# ------------------------
 $(BUILD_DIR) $(OBJ_DIR):
 	mkdir -p $@
