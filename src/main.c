@@ -9,42 +9,55 @@ typedef struct tetris_bag tetris_bag_t;
 typedef struct game_state game_state_t;
 
 /* Externally dependent */
-U0
+void
 print_bitboard (game_state_t* state, score_info_t* score)
 {
-  start_color ();
-  init_pair (1, COLOR_BLACK, COLOR_WHITE);
-  init_pair (2, COLOR_BLACK, COLOR_BLACK);
+  const int board_width = 10;
 
-  for (I8 j = 0; j < BOARD_HEIGHT - 1; j++)
+  for (int j = 0; j < BOARD_HEIGHT - 1; j++)
   {
-    U16 board = state->board[j];
-    U16 piece = state->piece[state->selected_rot][j];
-    for (I8 i = 12; i >= 3; i--)
+    mvprintw (j, 0, "<!");
+
+    for (int i = 0; i < board_width; i++)
     {
-      U8 bit1 = (U8) (((unsigned) board >> i) & 1);
-      U8 bit2 = (U8) (((unsigned) piece >> i) & 1);
+      U16 board = state->board[j];
+      U16 piece = state->piece[state->selected_rot][j];
+      U8 bit1 = (U8) (((unsigned) board >> (12 - i)) & 1);
+      U8 bit2 = (U8) (((unsigned) piece >> (12 - i)) & 1);
       U8 bit = bit1 | bit2;
 
       if (bit)
       {
-        attron (COLOR_PAIR (1));
+        mvprintw (j, 2 + i * 3, "[ ]");
       }
       else
       {
-        attron (COLOR_PAIR (2));
+        mvprintw (j, 2 + i * 3, " . ");
       }
-
-      mvaddch (j, 15 - i, ' ');
-
-      attroff (COLOR_PAIR (1));
-      attroff (COLOR_PAIR (2));
     }
+
+    mvprintw (j, 2 + board_width * 3, ">!");
   }
 
-  mvprintw (1, 16, "Level %u", score->level);
-  mvprintw (2, 16, "Score: %u", score->score);
-  mvprintw (3, 16, "Lines: %u", score->lines);
+  int bottom_y = BOARD_HEIGHT - 1;
+  mvprintw (bottom_y, 0, "<!");
+  for (int i = 0; i < board_width; i++)
+  {
+    printw ("===");
+  }
+  printw (">!");
+
+  bottom_y++;
+  mvprintw (bottom_y, 0, "\\/\\/\\/");
+  for (int i = 1; i < board_width - 2; i++)
+  {
+    printw ("\\/\\/");
+  }
+
+  mvprintw (1, 36, "Level %u", score->level);
+  mvprintw (2, 36, "Score: %u", score->score);
+  mvprintw (3, 36, "Lines: %u", score->lines);
+
   refresh ();
 }
 
@@ -116,6 +129,11 @@ main (U0)
       }
       elapsed = FALL_PERIOD;
       break;
+    case 'p':
+      mvprintw (23, 13, "Paused");
+      nodelay (stdscr, FALSE);
+      ch = getch ();
+      nodelay (stdscr, TRUE);
     default:
       /* Consider default case */
       break;
