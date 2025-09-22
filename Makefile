@@ -40,8 +40,8 @@ debug: $(DEBUG_TARGET)
 	./$(DEBUG_TARGET)
 
 # Static analysis
-.PHONY: tidy
-tidy:
+.PHONY: lint
+lint:
 	clang-tidy $(SRCS) \
 		--checks=clang-analyzer-*,bugprone-*,hicpp-* \
 		-header-filter=.* \
@@ -51,6 +51,11 @@ tidy:
 .PHONY: clean
 clean:
 	rm -rf $(BUILD_DIR)
+
+# Pull from the remote repository
+.PHONY: update
+update:
+	git pull
 
 # Link executable
 $(TARGET): $(OBJS) | $(BUILD_DIR)
