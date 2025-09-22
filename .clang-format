@@ -1,0 +1,7 @@
+BasedOnStyle: Microsoft
+IndentWidth: 2
+PointerAlignment: Left
+AlwaysBreakAfterDefinitionReturnType: All
+BreakAfterReturnType: AllDefinitions
+SpaceBeforeParens: Always
+SpaceAfterCStyleCast: true

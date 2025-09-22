@@ -5,7 +5,7 @@ if [[ " $@ " =~ " -r " ]] || [[ " $@ " =~ " --refresh " ]]; then
     make clean && make
 else
     make format
-    make
+    make -j$(nproc)
 fi
 
 echo "Press ENTER to continue..."

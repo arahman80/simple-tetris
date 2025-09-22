@@ -1,6 +1,7 @@
 # Compiler and flags
 CC = clang
 CFLAGS = -std=c99 -Wall -Wextra -Werror -Os -Iinclude
+DEBUG_FLAGS = -std=c99 -Wall -Wextra -Werror -Wpedantic -O0 -g -Iinclude
 LIBS = -lncurses
 
 # Directories
@@ -12,65 +13,53 @@ OBJ_DIR = $(BUILD_DIR)/obj
 SRCS = $(wildcard $(SRC_DIR)/*.c) \
        $(wildcard $(SRC_DIR)/game_utils/*.c) \
        $(wildcard $(SRC_DIR)/initializers/*.c) \
-	   $(wildcard $(SRC_DIR)/piece/*.c) \
-	   $(wildcard $(SRC_DIR)/piece_select/*.c)
+       $(wildcard $(SRC_DIR)/piece/*.c) \
+       $(wildcard $(SRC_DIR)/piece_select/*.c)
 
-# Object files (mirrors src/ hierarchy inside build/obj/)
+# Object files
 OBJS = $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRCS))
 
-# Target executable
+# Target executables
 TARGET = $(BUILD_DIR)/tetris
-
-# Clang-format style (can be overridden)
-STYLE = GNU
+DEBUG_TARGET = $(BUILD_DIR)/tetris_debug
 
 # Default rule
 all: $(TARGET)
 
-# Link the executable
+# Link executables
 $(TARGET): $(OBJS) | $(BUILD_DIR)
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 
-# Compile source files into object files
+$(DEBUG_TARGET): $(OBJS) | $(BUILD_DIR)
+	$(CC) $(DEBUG_FLAGS) -o $@ $^ $(LIBS)
+
+# Compile object files (generic rule)
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Ensure build and object directories exist
-$(BUILD_DIR):
-	mkdir -p $(BUILD_DIR)
-
-$(OBJ_DIR):
-	mkdir -p $(OBJ_DIR)
-
-# Debug target
-DEBUG_TARGET = $(BUILD_DIR)/tetris_debug
-DEBUG_FLAGS = -std=c99 -Wall -Wextra -Werror -Wpedantic -O0 -g -Iinclude
-
+# Compile object files for debug
+debug_objs := $(OBJS)
+debug: CFLAGS := $(DEBUG_FLAGS)
 debug: $(DEBUG_TARGET)
 
-# Link debug executable
-$(DEBUG_TARGET): $(OBJS) | $(BUILD_DIR)
-	$(CC) $(DEBUG_FLAGS) -o $@ $^ $(LIBS)
+# Ensure build directories exist
+$(BUILD_DIR) $(OBJ_DIR):
+	mkdir -p $@
 
-# Compile source files for debug
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
-	@mkdir -p $(dir $@)
-	$(CC) $(DEBUG_FLAGS) -c $< -o $@
-
-# Format all C and header files
+# Format
 format:
-	clang-format -i -style=$(STYLE) $(SRCS) $(wildcard include/*.h)
+	clang-format -i $(SRCS) $(wildcard include/*.h)
 
-# Run clang-tidy on all sources
+# Clang-tidy
 tidy:
 	clang-tidy $(SRCS) \
 		--checks=clang-analyzer-*,bugprone-*,hicpp-* \
 		-header-filter=.* \
 		-- $(CFLAGS) -fdiagnostics-color=always
 
-# Clean build artifacts
+# Clean
 clean:
 	rm -rf $(BUILD_DIR)
 
-.PHONY: all clean format lint debug
+.PHONY: all clean format tidy debug

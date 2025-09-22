@@ -3,8 +3,8 @@
 #define STRINGIFY(X) #X
 #define TOSTRING(X) STRINGIFY (X)
 #ifdef USE_OX_NOTATION
-#define TI_SYSCALL(OFFSET)                                                    \
-  __asm__ ("RST 0x28\n"                                                       \
+#define TI_SYSCALL(OFFSET)                                                                                             \
+  __asm__ ("RST 0x28\n"                                                                                                \
            "DW " TOSTRING (OFFSET))
 #define XSCLt 0x2
 #define YSCLt 0x3
@@ -3561,8 +3561,8 @@
 #define E_SS 0xE
 #define E_MS 0xE
 #else
-#define TI_SYSCALL(OFFSET)                                                    \
-  __asm__ ("RST 0x28\n"                                                       \
+#define TI_SYSCALL(OFFSET)                                                                                             \
+  __asm__ ("RST 0x28\n"                                                                                                \
            "DW " TOSTRING (OFFSET))
 #define XSCLt 2
 #define YSCLt 3

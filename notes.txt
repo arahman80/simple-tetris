@@ -15,3 +15,5 @@ info:
         .db offset & 0xFF, (offset >> 8) & 0xFF
     
     offsets will be derived from ti83plus.inc
+
+use make -j$(nproc) to compile at the speed of light
