@@ -9,7 +9,7 @@ clear_rows (struct game_state *state)
   I8 cleared_count = 0;
   for (I8 src = BOARD_HEIGHT - 2; src >= 0; src--)
     {
-      if ((state->board[src] & FILLED_ROW) != FILLED_ROW)
+      if ((state->board[src] & UCAST FILLED_ROW) != UCAST FILLED_ROW)
         {
           state->board[dst--] = state->board[src];
         }
