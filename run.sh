@@ -1,18 +1,19 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
+# the C replacement I tried making was hot garbage so run.sh is back
+set -e  # exit on any error
+
+# Always format first
 make format
 
-if [[ " $@ " =~ " -d " ]] || [[ " $@ " =~ " --debug " ]]; then
+# Determine which build to run
+if [[ " $* " == *" --debug "* ]]; then
+    echo "Running debug build..."
     make clean && make debug
-elif [[ " $@ " =~ " -r " ]] || [[ " $@ " =~ " --refresh " ]]; then
+elif [[ " $* " == *" --refresh "* ]]; then
+    echo "Running refresh build..."
     make clean && make
 else
-    make -j$(nproc)
+    echo "Running default parallel build..."
+    make -j"$(nproc)"
 fi
-
-
-echo "Press enter to continue"
-read dummy
-
-./build/tetris
-
