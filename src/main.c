@@ -106,26 +106,32 @@ main (U0)
   score_info_t score = {1, 0, 0, 0};
   init_game_board (&state);
   init_piece_board (&state);
+  /* Externally dependent */
   struct timespec last_fall = {0};
   clock_gettime (CLOCK_MONOTONIC, &last_fall);
 
   struct timespec frame_delay = {0};
   frame_delay.tv_sec = (__syscall_slong_t) BASE_US_BETWEEN_FRAMES / 1000000;
   frame_delay.tv_nsec = (__syscall_slong_t) (BASE_US_BETWEEN_FRAMES % 1000000) * 1000;
+  /* Externally dependent */
 
+  /* Externally dependent */
   initscr ();
   noecho ();
   cbreak ();
   curs_set (0);
   keypad (stdscr, TRUE);
   nodelay (stdscr, TRUE);
+  /* Externally dependent */
 
   I16 ch;
   while ((ch = getch ()) != 'q')
   {
+    /* Externally dependent */
     struct timespec now;
     clock_gettime (CLOCK_MONOTONIC, &now);
     double elapsed = (double) (now.tv_sec - last_fall.tv_sec) + (double) (now.tv_nsec - last_fall.tv_nsec) / 1e9;
+    /* Externally dependent */
 
     switch (ch)
     {
@@ -164,10 +170,12 @@ main (U0)
       elapsed = FALL_PERIOD;
       break;
     case 'p':
+      /* Externally dependent */
       mvprintw (23, 13, "Paused");
       nodelay (stdscr, FALSE);
       ch = getch ();
       nodelay (stdscr, TRUE);
+      /* Externally dependent */
     case 'h':
     case 'c': {
       U8 placeholder = state.held_piece_type;
@@ -195,17 +203,23 @@ main (U0)
 
         if (test_interference (&state))
         {
+          /* Externally dependent */
           endwin ();
+          /* Externally dependent */
           return 0;
         }
       }
     }
 
+    /* Externally dependent */
     erase ();
     print_bitboard (&state, &score);
     nanosleep (&frame_delay, NULL);
+    /* Externally dependent */
   }
 
+  /* Externally dependent */
   endwin ();
+  /* Externally dependent */
   return 0;
 }
