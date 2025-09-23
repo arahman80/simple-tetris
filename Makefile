@@ -20,10 +20,10 @@ TARGET = $(BUILD_DIR)/tetris
 DEBUG_TARGET = $(BUILD_DIR)/tetris_debug
 
 # Default goal: format + build
-.DEFAULT_GOAL := build_all
+.DEFAULT_GOAL := build
 
-.PHONY: build_all
-build_all: format $(TARGET)
+.PHONY: build
+build: format $(TARGET)
 	@echo "Build complete: $(TARGET)"
 
 # Formatting
@@ -66,21 +66,22 @@ help:
 		| tr ' ' '\n'
 
 # Link executable
-$(TARGET): $(OBJS) | $(BUILD_DIR)
+$(TARGET): $(OBJS) | build_dir
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 
-$(DEBUG_TARGET): $(OBJS) | $(BUILD_DIR)
+$(DEBUG_TARGET): $(OBJS_DEBUG) | build_dir
 	$(CC) $(DEBUG_FLAGS) -o $@ $^ $(LIBS)
 
 # Compile object files
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | build_dir
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(OBJ_DIR_DEBUG)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR_DEBUG)
+$(OBJ_DIR_DEBUG)/%.o: $(SRC_DIR)/%.c | build_dir
 	@mkdir -p $(dir $@)
 	$(CC) $(DEBUG_FLAGS) -c $< -o $@
 
 # Ensure build directories exist
-$(BUILD_DIR) $(OBJ_DIR):
-	mkdir -p $@
+.PHONY: build_dir
+build_dir:
+	mkdir -p $(BUILD_DIR) $(OBJ_DIR) $(OBJ_DIR_DEBUG)
