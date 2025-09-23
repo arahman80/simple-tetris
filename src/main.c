@@ -130,7 +130,6 @@ main (U0)
   state.piece_type = next_piece (&bag);
   state.next_piece_type = next_piece (&bag);
   state.held_piece_type = next_piece (&bag);
-  U8 placeholder = -1;
   score_info_t score = {1, 0, 0, 0};
   init_game_board (&state);
   init_piece_board (&state);
@@ -188,18 +187,12 @@ main (U0)
       nodelay (stdscr, FALSE);
       ch = getch ();
       nodelay (stdscr, TRUE);
-    case 'h':
-      if (placeholder < 0)
-      {
-        state.held_piece_type = state.next_piece_type;
-        state.next_piece_type = next_piece (&bag);
-      }
-      else
-      {
-        placeholder = state.held_piece_type;
-        state.held_piece_type = state.next_piece_type;
-        state.next_piece_type = placeholder;
-      }
+    case 'h': {
+      U8 placeholder = state.held_piece_type;
+      state.held_piece_type = state.next_piece_type;
+      state.next_piece_type = placeholder;
+    };
+    break;
     default:
       /* Consider adding default case */
       break;
