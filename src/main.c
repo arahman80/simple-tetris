@@ -187,7 +187,8 @@ main (U0)
       nodelay (stdscr, FALSE);
       ch = getch ();
       nodelay (stdscr, TRUE);
-    case 'h': {
+    case 'h':
+    case 'c': {
       U8 placeholder = state.held_piece_type;
       state.held_piece_type = state.next_piece_type;
       state.next_piece_type = placeholder;
