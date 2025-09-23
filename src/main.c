@@ -13,43 +13,15 @@ static const U8 piece_shapes[][4] = {
     {0xC, 0x6, 0x0, 0x0}, {0x8, 0xE, 0x0, 0x0}, {0x2, 0xE, 0x0, 0x0},
 };
 
-/* Externally reliant */
+/* Externally dependent */
 void
 draw_piece_preview (I8 y, I8 x, I8 piece_type)
 {
-  I8 idx = -1;
-  switch (piece_type)
-  {
-  case PIECE_I:
-    idx = 0;
-    break;
-  case PIECE_O:
-    idx = 1;
-    break;
-  case PIECE_T:
-    idx = 2;
-    break;
-  case PIECE_S:
-    idx = 3;
-    break;
-  case PIECE_Z:
-    idx = 4;
-    break;
-  case PIECE_J:
-    idx = 5;
-    break;
-  case PIECE_L:
-    idx = 6;
-    break;
-  default:
-    return;
-  }
-
   for (I8 r = 0; r < 4; r++)
   {
     for (I8 c = 0; c < 4; c++)
     {
-      if ((piece_shapes[idx][r] >> (3 - c)) & 1)
+      if ((piece_shapes[piece_type][r] >> (3 - c)) & 1)
       {
         mvprintw (y + r, x + c * 3, "[ ]");
       }

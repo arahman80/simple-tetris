@@ -5,13 +5,13 @@
 
 enum piece
 {
+  PIECE_I,
   PIECE_O,
   PIECE_T,
-  PIECE_I,
   PIECE_S,
   PIECE_Z,
-  PIECE_L,
-  PIECE_J
+  PIECE_J,
+  PIECE_L
 };
 
 struct game_state
