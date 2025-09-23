@@ -8,34 +8,9 @@ typedef struct score_info score_info_t;
 typedef struct tetris_bag tetris_bag_t;
 typedef struct game_state game_state_t;
 
-const char*
-piece_name (I8 type)
-{
-  switch (type)
-  {
-  case PIECE_I:
-    return "I piece";
-  case PIECE_O:
-    return "O piece";
-  case PIECE_T:
-    return "T piece";
-  case PIECE_S:
-    return "S piece";
-  case PIECE_Z:
-    return "Z piece";
-  case PIECE_J:
-    return "J piece";
-  case PIECE_L:
-    return "L piece";
-  default:
-    return "N/A";
-  }
-}
-
 static const U8 piece_shapes[][4] = {
-    {0b0000, 0b1111, 0b0000, 0b0000}, {0b0110, 0b0110, 0b0000, 0b0000}, {0b0100, 0b1110, 0b0000, 0b0000},
-    {0b0110, 0b1100, 0b0000, 0b0000}, {0b1100, 0b0110, 0b0000, 0b0000}, {0b1000, 0b1110, 0b0000, 0b0000},
-    {0b0010, 0b1110, 0b0000, 0b0000},
+    {0x0, 0xF, 0x0, 0x0}, {0x6, 0x6, 0x0, 0x0}, {0x4, 0xE, 0x0, 0x0}, {0x6, 0xC, 0x0, 0x0},
+    {0xC, 0x6, 0x0, 0x0}, {0x8, 0xE, 0x0, 0x0}, {0x2, 0xE, 0x0, 0x0},
 };
 
 void
@@ -135,12 +110,6 @@ print_bitboard (game_state_t* state, score_info_t* score)
   mvprintw (1, x_offset + 36, "Level %u", score->level);
   mvprintw (2, x_offset + 36, "Score: %u", score->score);
   mvprintw (3, x_offset + 36, "Lines: %u", score->lines);
-
-  mvprintw (5, x_offset + 36, "Held:");
-  mvprintw (6, x_offset + 36, "%s", piece_name (state->held_piece_type));
-
-  mvprintw (8, x_offset + 36, "Next:");
-  mvprintw (9, x_offset + 36, "%s", piece_name (state->next_piece_type));
 
   mvprintw (2, 0, "Held:");
   draw_piece_preview (3, 0, state->held_piece_type);
