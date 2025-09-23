@@ -136,26 +136,27 @@ main (U0)
     switch (ch)
     {
     case 'w':
-    case 'W':
+    case 'i':
     case KEY_UP:
       do_rotation (&state, TRUE, state.piece_type == PIECE_I);
       break;
     case 's':
-    case 'S':
+    case 'k':
     case KEY_DOWN:
       do_rotation (&state, FALSE, state.piece_type == PIECE_I);
       break;
     case 'a':
-    case 'A':
+    case 'j':
     case KEY_LEFT:
       h_shift (&state, 1, TRUE, FALSE);
       break;
     case 'd':
-    case 'D':
+    case 'l':
     case KEY_RIGHT:
       h_shift (&state, 1, FALSE, FALSE);
       break;
     case 'f':
+    case 'v':
       if (v_shift (&state, 1, FALSE))
       {
         score.score += 1;
