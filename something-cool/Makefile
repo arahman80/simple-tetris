@@ -1,5 +1,3 @@
-# Makefile
-
 # Compiler and flags
 CC = gcc
 CFLAGS = -Wall -Wextra -O2 -Iinclude
@@ -9,6 +7,7 @@ LDFLAGS =
 SRC_DIR = src
 BUILD_DIR = build
 SRC = $(wildcard $(SRC_DIR)/*.c)
+HDR = $(wildcard include/*.h)
 OBJ = $(patsubst $(SRC_DIR)/%.c,$(BUILD_DIR)/%.o,$(SRC))
 TARGET = $(BUILD_DIR)/tetris
 
@@ -31,4 +30,8 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c | $(BUILD_DIR)
 clean:
 	rm -rf $(BUILD_DIR)
 
-.PHONY: all clean
+# Format all source and header files
+format:
+	clang-format -i $(SRC) $(HDR)
+
+.PHONY: all clean format

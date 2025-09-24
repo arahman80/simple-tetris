@@ -54,12 +54,11 @@ main (void)
     }
 
     if (is_valid (&piece, board, 0, 1, 0, 0))
-    {
       piece.y += 1;
-    }
     else
     {
       ground_piece (&piece, board);
+      clear_rows (board);
       select_piece (next_piece (&bag), &piece);
       if (!is_valid (&piece, board, 0, 0, 0, 0))
       {
