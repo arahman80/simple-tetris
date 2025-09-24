@@ -1,5 +1,7 @@
 #include "game.h"
+#ifdef debug
 #include <stdio.h>
+#endif
 
 void
 init_board (uint board[21])
