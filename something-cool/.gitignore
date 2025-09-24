@@ -1,0 +1,4 @@
+# Ignore JSON configs
+*.json
+# Ignore build directory
+build/

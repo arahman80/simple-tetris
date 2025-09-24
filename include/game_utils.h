@@ -17,7 +17,7 @@ enum piece
 struct game_state
 {
   U16 board[BOARD_HEIGHT];
-  U16 piece[NUM_ROT][BOARD_HEIGHT];
+  // U16 piece[NUM_ROT][BOARD_HEIGHT];
   enum piece piece_type;
   enum piece next_piece_type;
   enum piece held_piece_type;
