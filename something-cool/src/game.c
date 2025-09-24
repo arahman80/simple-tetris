@@ -23,22 +23,22 @@ print_binary_10 (uint x)
 
 uchar
 is_valid (struct tetris_piece* piece, uint board[21], schar x_shift,
-               schar y_shift, schar rotate, schar clockwise)
+          schar y_shift, schar rotate, schar clockwise)
 {
-  #ifdef debug
+#ifdef debug
   printf ("\n=== is_valid ===\n");
   printf ("piece->x=%d, piece->y=%d, x_shift=%d, y_shift=%d, rotate=%d, "
           "clockwise=%d\n",
           piece->x, piece->y, x_shift, y_shift, rotate, clockwise);
-  #endif
+#endif
 
   uchar ROT = piece->selected_rotation;
   if (rotate)
     ROT = (ROT + (clockwise ? 1 : 3)) % 4;
 
-  #ifdef debug
+#ifdef debug
   printf ("rotation used=%d\n", ROT);
-  #endif
+#endif
 
   uchar up_seg = piece->piece_map[ROT][0];
   uchar low_seg = piece->piece_map[ROT][1];
@@ -53,7 +53,7 @@ is_valid (struct tetris_piece* piece, uint board[21], schar x_shift,
   uint seg3_shifted = (uint) seg3 << (10 - 4 - (piece->x + x_shift));
   uint seg4_shifted = (uint) seg4 << (10 - 4 - (piece->x + x_shift));
 
-  #ifdef debug
+#ifdef debug
   printf ("row visualization:\n");
   printf ("row %2d: ", piece->y + 0 + y_shift);
   print_binary_10 (board[piece->y + 0 + y_shift] | seg1_shifted);
@@ -70,7 +70,7 @@ is_valid (struct tetris_piece* piece, uint board[21], schar x_shift,
   printf ("row %2d: ", piece->y + 3 + y_shift);
   print_binary_10 (board[piece->y + 3 + y_shift] | seg4_shifted);
   printf ("\n");
-  #endif
+#endif
 
   if (board[piece->y + 0 + y_shift] & seg1_shifted)
     return 0;
@@ -81,19 +81,20 @@ is_valid (struct tetris_piece* piece, uint board[21], schar x_shift,
   if (board[piece->y + 3 + y_shift] & seg4_shifted)
     return 0;
 
-  #ifdef debug
+#ifdef debug
   printf ("no collision detected\n");
-  #endif
+#endif
   return 1;
 }
 
-schar
+void
 clear_rows (uint board[21])
 {
   schar dst = 21 - 2;
 
   for (schar src = 21 - 2; src >= 0; src--)
-    if ((board[src] & (unsigned) 0b1111111111111111) != (unsigned) 0b1111111111111111)
+    if ((board[src] & (unsigned) 0b1111111111111111) !=
+        (unsigned) 0b1111111111111111)
       board[dst--] = board[src];
 
   while (dst >= 0)
