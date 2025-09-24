@@ -24,22 +24,22 @@ main (void)
     switch (c)
     {
     case 'w':
-      if (!test_movement (&piece, board, 0, 0, 1, 1))
+      if (is_valid (&piece, board, 0, 0, 1, 1))
         piece.selected_rotation = (piece.selected_rotation + 1) % 4;
       break;
 
     case 's':
-      if (!test_movement (&piece, board, 0, 0, 1, 0))
+      if (is_valid (&piece, board, 0, 0, 1, 0))
         piece.selected_rotation = (piece.selected_rotation + 3) % 4;
       break;
 
     case 'a':
-      if (!test_movement (&piece, board, -1, 0, 0, 0))
+      if (is_valid (&piece, board, -1, 0, 0, 0))
         piece.x -= 1;
       break;
 
     case 'd':
-      if (!test_movement (&piece, board, 1, 0, 0, 0))
+      if (is_valid (&piece, board, 1, 0, 0, 0))
         piece.x += 1;
       break;
 
@@ -53,7 +53,7 @@ main (void)
       break;
     }
 
-    if (!test_movement (&piece, board, 0, 1, 0, 0))
+    if (is_valid (&piece, board, 0, 1, 0, 0))
     {
       piece.y += 1;
     }
@@ -61,7 +61,7 @@ main (void)
     {
       ground_piece (&piece, board);
       select_piece (next_piece (&bag), &piece);
-      if (test_movement (&piece, board, 0, 0, 0, 0))
+      if (!is_valid (&piece, board, 0, 0, 0, 0))
       {
         printf ("You Lost!\n");
         return 0;

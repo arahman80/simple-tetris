@@ -1,7 +1,5 @@
 #include "game.h"
-#ifdef debug
 #include <stdio.h>
-#endif
 
 void
 init_board (uint board[21])
@@ -24,11 +22,11 @@ print_binary_10 (uint x)
 #endif
 
 uchar
-test_movement (struct tetris_piece* piece, uint board[21], schar x_shift,
+is_valid (struct tetris_piece* piece, uint board[21], schar x_shift,
                schar y_shift, schar rotate, schar clockwise)
 {
   #ifdef debug
-  printf ("\n=== test_movement ===\n");
+  printf ("\n=== is_valid ===\n");
   printf ("piece->x=%d, piece->y=%d, x_shift=%d, y_shift=%d, rotate=%d, "
           "clockwise=%d\n",
           piece->x, piece->y, x_shift, y_shift, rotate, clockwise);
@@ -76,18 +74,18 @@ test_movement (struct tetris_piece* piece, uint board[21], schar x_shift,
   #endif
 
   if (board[piece->y + 0 + y_shift] & seg1_shifted)
-    return 1;
+    return 0;
   if (board[piece->y + 1 + y_shift] & seg2_shifted)
-    return 1;
+    return 0;
   if (board[piece->y + 2 + y_shift] & seg3_shifted)
-    return 1;
+    return 0;
   if (board[piece->y + 3 + y_shift] & seg4_shifted)
-    return 1;
+    return 0;
 
   #ifdef debug
   printf ("no collision detected\n");
   #endif
-  return 0;
+  return 1;
 }
 
 void
