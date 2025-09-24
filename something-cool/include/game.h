@@ -18,5 +18,6 @@ uchar is_valid (struct tetris_piece* piece, uint board[21], schar x_shift,
 void ground_piece (struct tetris_piece* piece, uint board[21]);
 void print_game (uint board[21], struct tetris_piece* piece);
 void clear_rows (uint board[21]);
+void rotate_srs (struct tetris_piece* piece, uint board[21], schar clockwise);
 
 #endif

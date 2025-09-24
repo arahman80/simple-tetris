@@ -24,13 +24,11 @@ main (void)
     switch (c)
     {
     case 'w':
-      if (is_valid (&piece, board, 0, 0, 1, 1))
-        piece.selected_rotation = (piece.selected_rotation + 1) % 4;
+      rotate_srs (&piece, board, 1);
       break;
 
     case 's':
-      if (is_valid (&piece, board, 0, 0, 1, 0))
-        piece.selected_rotation = (piece.selected_rotation + 3) % 4;
+      rotate_srs (&piece, board, 0);
       break;
 
     case 'a':
