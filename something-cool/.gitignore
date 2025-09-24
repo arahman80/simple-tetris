@@ -1,4 +1,6 @@
 # Ignore JSON configs
 *.json
+# Ignore clangd cache
+.cache/
 # Ignore build directory
 build/
