@@ -2,11 +2,8 @@
 
 typedef struct score_info score_info_t;
 
-U0
-update_score (score_info_t* info, U8 new_lines)
-{
-  switch (new_lines)
-  {
+U0 update_score(score_info_t *info, U8 new_lines) {
+  switch (new_lines) {
   case 1:
     info->score += 100 * info->level;
     break;
@@ -26,8 +23,7 @@ update_score (score_info_t* info, U8 new_lines)
   info->lines += new_lines;
   info->lines_this_level += new_lines;
 
-  if (info->lines_this_level >= info->level * 10)
-  {
+  if (info->lines_this_level >= info->level * 10) {
     info->level += 1;
     info->lines_this_level -= info->level * 10;
   }

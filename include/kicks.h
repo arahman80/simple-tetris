@@ -3,8 +3,7 @@
 
 #include "stdmac.h"
 
-struct kick
-{
+struct kick {
   I8 x, y;
 };
 

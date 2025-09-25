@@ -1,6 +1,6 @@
 # C compiler
-CC = sdcc
-CFLAGS = -std=c99 -Wall -Wextra -Werror -Os -Iinclude
+CC = gcc
+CFLAGS = -std=c99 -Wall -Wextra -Os -Iinclude
 DEBUG_FLAGS = -std=c99 -Wall -Wextra -Werror -Wpedantic -O0 -g -Iinclude
 LIBS = -lncurses
 

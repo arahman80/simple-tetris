@@ -3,35 +3,60 @@ CC = gcc
 CFLAGS = -std=c99 -Wall -Wextra -Werror -Os -Iinclude
 LDFLAGS = 
 
+FPC = fpc
+FPCFLAGS = -O2 -o
+
 # Directories
 SRC_DIR = src
 BUILD_DIR = build
-SRC = $(wildcard $(SRC_DIR)/*.c)
-HDR = $(wildcard include/*.h)
-OBJ = $(patsubst $(SRC_DIR)/%.c,$(BUILD_DIR)/%.o,$(SRC))
-TARGET = $(BUILD_DIR)/tetris
+
+# C sources and objects
+C_SRC = $(wildcard $(SRC_DIR)/*.c)
+C_HDR = $(wildcard include/*.h)
+C_OBJ = $(patsubst $(SRC_DIR)/%.c,$(BUILD_DIR)/%.o,$(C_SRC))
+C_TARGET = $(BUILD_DIR)/tetris
+
+# Pascal sources and target
+PAS_SRC = $(SRC_DIR)/main.pas
+PAS_TARGET = $(BUILD_DIR)/tetris-pas
 
 # Default target
-all: $(BUILD_DIR) $(TARGET)
+all: c pascal
 
-# Create build directory if it doesn't exist
+# Build directories
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
 
-# Link object files into executable
-$(TARGET): $(OBJ) | $(BUILD_DIR)
+# C build
+c: $(BUILD_DIR) $(C_TARGET)
+
+$(C_TARGET): $(C_OBJ) | $(BUILD_DIR)
+	@echo "Linking C Tetris..."
 	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
-# Compile each .c into .o in build/
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c | $(BUILD_DIR)
+	@echo "Compiling $<..."
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Clean up build artifacts
-clean:
-	rm -rf $(BUILD_DIR)
+# Pascal build
+pascal: $(BUILD_DIR) $(PAS_TARGET)
 
-# Format all source and header files
+$(PAS_TARGET): $(PAS_SRC) | $(BUILD_DIR)
+	@echo "Building Pascal Tetris..."
+	$(FPC) $(FPCFLAGS)$@ $<
+
+# Clean targets
+clean: clean-c clean-pascal
+
+clean-c:
+	rm -f $(C_OBJ) $(C_TARGET)
+
+clean-pascal:
+	rm -f $(PAS_TARGET)
+
+# Format (C only)
 format:
-	clang-format -i $(SRC) $(HDR)
+	clang-format -i $(C_SRC) $(C_HDR)
 
-.PHONY: all clean format
+# Phony targets
+.PHONY: all c pascal clean clean-c clean-pascal format
