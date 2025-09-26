@@ -10,7 +10,7 @@ end;
 
 type
   TPieceMap = array[0..3, 0..1] of Byte;
-  TBoard = array[0..20] of LongWord;
+  TBoard = array[0..20] of Word;
   TBag = array[0..6] of Byte;
   
   TKick = record
@@ -22,9 +22,9 @@ type
   TTetrisPiece = record
     X: ShortInt;
     Y: ShortInt;
-    PieceType: String;
+    IsIPiece: Boolean;
     SelectedRotation: Byte;
-    PieceMap: ^TPieceMap;
+    PieceType: Byte;
   end;
   
   TTetrisBag = record
@@ -34,13 +34,15 @@ type
   end;
 
 const
-  OPiece: TPieceMap = (($66, $00), ($66, $00), ($66, $00), ($66, $00));
-  IPiece: TPieceMap = (($0F, $00), ($22, $22), ($00, $F0), ($44, $44));
-  TPiece: TPieceMap = (($4E, $00), ($46, $40), ($0E, $40), ($4C, $40));
-  SPiece: TPieceMap = (($6C, $00), ($46, $20), ($6C, $00), ($8C, $40));
-  ZPiece: TPieceMap = (($C6, $00), ($26, $40), ($C6, $00), ($4C, $80));
-  LPiece: TPieceMap = (($8E, $00), ($64, $40), ($E2, $00), ($44, $C0));
-  JPiece: TPieceMap = (($2E, $00), ($44, $60), ($E8, $00), ($C4, $40));
+  PieceMaps: array[0..6] of TPieceMap = (
+    (($66, $00), ($66, $00), ($66, $00), ($66, $00)), // o
+    (($0F, $00), ($22, $22), ($00, $F0), ($44, $44)), // i
+    (($4E, $00), ($46, $40), ($0E, $40), ($4C, $40)), // t
+    (($6C, $00), ($46, $20), ($6C, $00), ($8C, $40)), // s
+    (($C6, $00), ($26, $40), ($C6, $00), ($4C, $80)), // z
+    (($8E, $00), ($64, $40), ($E2, $00), ($44, $C0)), // l
+    (($2E, $00), ($44, $60), ($E8, $00), ($C4, $40))  // j
+  );
 
   SRSNorm: TKickTable = (
     // From rotation 0
@@ -94,6 +96,25 @@ const
      ((X:0; Y:0), (X:0; Y:0), (X:0; Y:0), (X:0; Y:0), (X:0; Y:0)))       // 3->3 (unused)
   );
 
+  Mod7Table: array[0..255] of Byte = (
+    0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 0, 1,
+    2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3,
+    4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5,
+    6, 0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 0,
+    1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 0, 1, 2,
+    3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4,
+    5, 6, 0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6,
+    0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 0, 1,
+    2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3,
+    4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5,
+    6, 0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 0,
+    1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 0, 1, 2,
+    3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4,
+    5, 6, 0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6,
+    0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 0, 1,
+    2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3
+  );
+
 var
   Board: TBoard;
   Bag: TTetrisBag;
@@ -117,32 +138,32 @@ var
   Rot: Byte;
   UpSeg, LowSeg: Byte;
   Seg1, Seg2, Seg3, Seg4: Byte;
-  Seg1Shifted, Seg2Shifted, Seg3Shifted, Seg4Shifted: LongWord;
+  Seg1Shifted, Seg2Shifted, Seg3Shifted, Seg4Shifted: Word;
 begin
   Rot := Piece.SelectedRotation;
   if Rotate <> 0 then
   begin
     if Clockwise <> 0 then
-      Rot := (Rot + 1) mod 4
+      Rot := (Rot + 1) and $03
     else
-      Rot := (Rot + 3) mod 4;
+      Rot := (Rot + 3) and $03;
   end;
 
-  UpSeg := Piece.PieceMap^[Rot, 0];
-  LowSeg := Piece.PieceMap^[Rot, 1];
+  UpSeg := PieceMaps[Piece.PieceType][Rot, 0];
+  LowSeg := PieceMaps[Piece.PieceType][Rot, 1];
 
   Seg1 := (UpSeg and $F0) shr 4;
   Seg2 := UpSeg and $0F;
   Seg3 := (LowSeg and $F0) shr 4;
   Seg4 := LowSeg and $0F;
 
-  Seg1Shifted := LongWord(Seg1) shl (10 - 4 - (Piece.X + XShift));
-  Seg2Shifted := LongWord(Seg2) shl (10 - 4 - (Piece.X + XShift));
-  Seg3Shifted := LongWord(Seg3) shl (10 - 4 - (Piece.X + XShift));
-  Seg4Shifted := LongWord(Seg4) shl (10 - 4 - (Piece.X + XShift));
+  Seg1Shifted := Word(Seg1) shl (6 - (Piece.X + XShift));
+  Seg2Shifted := Word(Seg2) shl (6 - (Piece.X + XShift));
+  Seg3Shifted := Word(Seg3) shl (6 - (Piece.X + XShift));
+  Seg4Shifted := Word(Seg4) shl (6 - (Piece.X + XShift));
 
   IsValid := True;
-  if (Board[Piece.Y + 0 + YShift] and Seg1Shifted) <> 0 then IsValid := False;
+  if (Board[Piece.Y + YShift] and Seg1Shifted) <> 0 then IsValid := False;
   if (Board[Piece.Y + 1 + YShift] and Seg2Shifted) <> 0 then IsValid := False;
   if (Board[Piece.Y + 2 + YShift] and Seg3Shifted) <> 0 then IsValid := False;
   if (Board[Piece.Y + 3 + YShift] and Seg4Shifted) <> 0 then IsValid := False;
@@ -153,23 +174,23 @@ var
   Rot: Byte;
   UpSeg, LowSeg: Byte;
   Seg1, Seg2, Seg3, Seg4: Byte;
-  Seg1Shifted, Seg2Shifted, Seg3Shifted, Seg4Shifted: LongWord;
+  Seg1Shifted, Seg2Shifted, Seg3Shifted, Seg4Shifted: Word;
 begin
   Rot := Piece.SelectedRotation;
-  UpSeg := Piece.PieceMap^[Rot, 0];
-  LowSeg := Piece.PieceMap^[Rot, 1];
+  UpSeg := PieceMaps[Piece.PieceType][Rot, 0];
+  LowSeg := PieceMaps[Piece.PieceType][Rot, 1];
 
   Seg1 := (UpSeg and $F0) shr 4;
   Seg2 := UpSeg and $0F;
   Seg3 := (LowSeg and $F0) shr 4;
   Seg4 := LowSeg and $0F;
 
-  Seg1Shifted := LongWord(Seg1) shl (10 - 4 - Piece.X);
-  Seg2Shifted := LongWord(Seg2) shl (10 - 4 - Piece.X);
-  Seg3Shifted := LongWord(Seg3) shl (10 - 4 - Piece.X);
-  Seg4Shifted := LongWord(Seg4) shl (10 - 4 - Piece.X);
+  Seg1Shifted := Word(Seg1) shl (6 - Piece.X);
+  Seg2Shifted := Word(Seg2) shl (6 - Piece.X);
+  Seg3Shifted := Word(Seg3) shl (6 - Piece.X);
+  Seg4Shifted := Word(Seg4) shl (6 - Piece.X);
 
-  Board[Piece.Y + 0] := Board[Piece.Y + 0] or Seg1Shifted;
+  Board[Piece.Y] := Board[Piece.Y] or Seg1Shifted;
   Board[Piece.Y + 1] := Board[Piece.Y + 1] or Seg2Shifted;
   Board[Piece.Y + 2] := Board[Piece.Y + 2] or Seg3Shifted;
   Board[Piece.Y + 3] := Board[Piece.Y + 3] or Seg4Shifted;
@@ -219,7 +240,7 @@ begin
 
   for I := 0 to 6 do
   begin
-    J := XorShift8(RandomState) mod 7;
+    J := Mod7Table[XorShift8(RandomState)];
     Temp := Bag[I];
     Bag[I] := Bag[J];
     Bag[J] := Temp;
@@ -249,37 +270,12 @@ begin
   Piece.X := 0;
   Piece.Y := 0;
   Piece.SelectedRotation := 0;
-
-  case selector of
-    0: begin
-         Piece.PieceMap := @OPiece;
-         Piece.PieceType := 'OPiece';
-       end;
-    1: begin
-         Piece.PieceMap := @IPiece;
-         Piece.PieceType := 'I';
-       end;
-    2: begin
-         Piece.PieceMap := @TPiece;
-         Piece.PieceType := 'TPiece';
-       end;
-    3: begin
-         Piece.PieceMap := @SPiece;
-         Piece.PieceType := 'SPiece';
-       end;
-    4: begin
-         Piece.PieceMap := @ZPiece;
-         Piece.PieceType := 'ZPiece';
-       end;
-    5: begin
-         Piece.PieceMap := @LPiece;
-         Piece.PieceType := 'LPiece';
-       end;
-    6: begin
-         Piece.PieceMap := @JPiece;
-         Piece.PieceType := 'JPiece';
-       end;
-  end;
+  if selector = 1 then
+    Piece.IsIPiece := True
+  else
+    Piece.IsIPiece := False;
+  
+  Piece.PieceType := selector;
 end;
 
 procedure PrintGame(var Board: TBoard; var Piece: TTetrisPiece);
@@ -295,18 +291,18 @@ begin
     Temp[I] := Board[I];
 
   Rot := Piece.SelectedRotation;
-  UpSeg := Piece.PieceMap^[Rot, 0];
-  LowSeg := Piece.PieceMap^[Rot, 1];
+  UpSeg := PieceMaps[Piece.PieceType][Rot, 0];
+  LowSeg := PieceMaps[Piece.PieceType][Rot, 1];
 
   Seg1 := (UpSeg and $F0) shr 4;
   Seg2 := UpSeg and $0F;
   Seg3 := (LowSeg and $F0) shr 4;
   Seg4 := LowSeg and $0F;
 
-  Temp[Piece.Y + 0] := Temp[Piece.Y + 0] or (LongWord(Seg1) shl (10 - 4 - Piece.X));
-  Temp[Piece.Y + 1] := Temp[Piece.Y + 1] or (LongWord(Seg2) shl (10 - 4 - Piece.X));
-  Temp[Piece.Y + 2] := Temp[Piece.Y + 2] or (LongWord(Seg3) shl (10 - 4 - Piece.X));
-  Temp[Piece.Y + 3] := Temp[Piece.Y + 3] or (LongWord(Seg4) shl (10 - 4 - Piece.X));
+  Temp[Piece.Y] := Temp[Piece.Y] or (Word(Seg1) shl (6 - Piece.X));
+  Temp[Piece.Y + 1] := Temp[Piece.Y + 1] or (Word(Seg2) shl (6 - Piece.X));
+  Temp[Piece.Y + 2] := Temp[Piece.Y + 2] or (Word(Seg3) shl (6 - Piece.X));
+  Temp[Piece.Y + 3] := Temp[Piece.Y + 3] or (Word(Seg4) shl (6 - Piece.X));
 
   WriteLn;
   for Y := 0 to 19 do
@@ -333,11 +329,11 @@ var
 begin
   FromRot := Piece.SelectedRotation;
   if Clockwise <> 0 then
-    ToRot := (FromRot + 1) mod 4
+    ToRot := (FromRot + 1) and $03
   else
-    ToRot := (FromRot + 3) mod 4;
+    ToRot := (FromRot + 3) and $03;
 
-  if Piece.PieceType = 'I' then
+  if Piece.IsIPiece then
   begin
     for I := 0 to 4 do
     begin
@@ -366,10 +362,11 @@ begin
 end;
 
 begin
+  Randomize;
   ClrScr;
   CursorOff;
   InitBoard(Board);
-  InitBag(Bag, 123);
+  InitBag(Bag, Random(123));
   SelectPiece(NextPiece(Bag), Piece);
   
   FallDelay := 500;

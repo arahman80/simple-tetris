@@ -1,0 +1,4 @@
+optimize shifts into table
+minimize 16 bit operations
+integrate different waiting mechanism that works with z80 & TI-OS
+use TI-OS ROM calls instead of standard Pascal libs
